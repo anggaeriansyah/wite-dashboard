@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         // primarySwatch: Colors.blue,
         primaryColor: _colorPrime,
       ),
-      home: const DashboardScreen(),
+      home: Dashboard(),
     );
   }
 }
