@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wite_dashboard/Dashboard.dart';
-import 'package:wite_dashboard/dashboardScreen.dart';
+import 'package:wite_dashboard/Screen/Dashboard.dart';
 
 void main() {
   runApp(const MyApp());
