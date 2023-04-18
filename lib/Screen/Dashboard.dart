@@ -50,10 +50,11 @@ class _DashboardState extends State<Dashboard> {
                     Container(
                       height: 100,
                       width: double.maxFinite,
-                      decoration: const BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          boxShadow: [
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20)),
+                          boxShadow: const [
                             BoxShadow(
                               offset: Offset(0, 3),
                               blurRadius: 10,
