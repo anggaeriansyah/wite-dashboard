@@ -40,63 +40,64 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
+              child: GestureDetector(
+                onTap: () =>
+                    Get.to(TambahScreen(), transition: Transition.downToUp),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 100,
+                      width: double.maxFinite,
+                      decoration: const BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              offset: Offset(0, 3),
+                              blurRadius: 10,
+                              color: Colors.black12,
+                              // spreadRadius: 0.5,
+                            )
+                          ]),
+                    ),
+                    const Positioned(
+                        top: 15,
+                        right: 15,
+                        child: Icon(
+                          Icons.add_box_rounded,
+                          size: 30,
+                          color: Colors.white,
+                        )),
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                          // color: Colors.amber,
+                          width: MediaQuery.of(context).size.width * 0.42,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: const Text(
+                            '''Tambah
+data wisata''',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                            overflow: TextOverflow.fade,
+                            softWrap: true,
+                            maxLines: 2,
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () =>
-                        Get.to(TambahScreen(), transition: Transition.downToUp),
-                    child: Stack(
-                      children: [
-                        Container(
-                          height: 100,
-                          width: MediaQuery.of(context).size.width * 0.42,
-                          decoration: const BoxDecoration(
-                              color: Colors.green,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: Offset(0, 3),
-                                  blurRadius: 10,
-                                  color: Colors.black12,
-                                  // spreadRadius: 0.5,
-                                )
-                              ]),
-                        ),
-                        const Positioned(
-                            top: 15,
-                            right: 15,
-                            child: Icon(
-                              Icons.add_box_rounded,
-                              size: 30,
-                              color: Colors.white,
-                            )),
-                        Positioned(
-                          bottom: 0,
-                          child: Container(
-                              // color: Colors.amber,
-                              width: MediaQuery.of(context).size.width * 0.42,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              child: const Text(
-                                '''Tambah
-data wisata''',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white),
-                                overflow: TextOverflow.fade,
-                                softWrap: true,
-                                maxLines: 2,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
                   GestureDetector(
                     onTap: () =>
                         Get.to(EditScreen(), transition: Transition.downToUp),
@@ -149,14 +150,6 @@ data wisata''',
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
                   GestureDetector(
                     onTap: () =>
                         Get.to(HapusScreen(), transition: Transition.downToUp),
