@@ -14,6 +14,14 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
+    List item = [
+      'Curug Ciputri',
+      'Curug Ciampea',
+      'Curug Hiji',
+      'Aldepos Salaca',
+      'Tenjolaya Park',
+    ];
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -212,39 +220,33 @@ data wisata''',
             ),
             Flexible(
                 child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                children: [
-                  Container(
-                    color: Colors.amber,
-                    child: const ListTile(
-                      leading: Icon(Icons.add_box),
-                      title: Text(
-                        'Tambah data wisata',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    color: Colors.amber,
-                    child: const ListTile(
-                      leading: Icon(Icons.edit),
-                      title: Text('Edit data wisata'),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    color: Colors.amber,
-                    child: const ListTile(
-                      leading: Icon(Icons.delete),
-                      title: Text('Hapus data wisata'),
-                    ),
-                  ),
-                ],
-              ),
-            )),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: ListView.builder(
+                        itemCount: item.length,
+                        itemBuilder: ((context, index) {
+                          return Container(
+                              margin: const EdgeInsets.only(bottom: 5),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(20)),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      offset: Offset(0, 3),
+                                      blurRadius: 10,
+                                      color: Colors.black12,
+                                      // spreadRadius: 0.5,
+                                    )
+                                  ]),
+                              child: Text(
+                                item[index].toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ));
+                        })))),
           ],
         ));
   }
