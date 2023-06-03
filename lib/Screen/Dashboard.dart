@@ -648,10 +648,12 @@ data wisata''',
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        document.reference
-                                                            .delete()
-                                                            .then((value) => print(
-                                                                "Delete berhasil"));
+                                                        _dialogBuilder(
+                                                            context, document);
+                                                        // document.reference
+                                                        //     .delete()
+                                                        //     .then((value) => print(
+                                                        //         "Delete berhasil"));
                                                       },
                                                       child: Icon(
                                                         Icons.delete,
@@ -672,4 +674,62 @@ data wisata''',
           ],
         ));
   }
+}
+
+Future<void> _dialogBuilder(BuildContext context, data) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
+        actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        title: const Text('Perhatian!'),
+        content: const Text(
+          'Apakah anda yakin ingin menghapus wisata ini?',
+          style: TextStyle(fontSize: 16),
+        ),
+        actions: <Widget>[
+          const Divider(
+            thickness: 1,
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    color: Colors.red,
+                    child: const Text(
+                      'Hapus',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                onPressed: () {
+                  data.reference
+                      .delete()
+                      .then((value) => print("Delete berhasil"));
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Kembali'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
 }
