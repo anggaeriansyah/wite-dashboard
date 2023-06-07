@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:wite_dashboard/Screen/detailScreen.dart';
 import 'package:wite_dashboard/Screen/edit_screen.dart';
-import 'package:wite_dashboard/Screen/hapus_screen.dart';
 import 'package:wite_dashboard/Screen/tambah_screen.dart';
 
 class Dashboard extends StatefulWidget {
@@ -83,30 +83,41 @@ class _DashboardState extends State<Dashboard> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "Dashboard",
-            // style: TextStyle(color: Colors.black),
+            "Kelola Wisata",
+            style: TextStyle(color: Colors.white),
           ),
-          // backgroundColor: Colors.white,
           backgroundColor: Theme.of(context).primaryColor,
+          actions: [
+            InkWell(
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Icon(Icons.logout_rounded),
+              ),
+            )
+          ],
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 70,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Manage data wisata',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ),
-            ),
+            // const SizedBox(
+            //   height: 70,
+            //   child: Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 20),
+            //     child: Align(
+            //       alignment: Alignment.centerLeft,
+            //       child: Text(
+            //         'Manage data wisata',
+            //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
+              padding: const EdgeInsets.only(
+                  top: 25, bottom: 20, right: 20, left: 20),
               child: GestureDetector(
                 onTap: () =>
                     Get.to(TambahScreen(), transition: Transition.downToUp),

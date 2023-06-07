@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wite_dashboard/Screen/Dashboard.dart';
+import 'package:wite_dashboard/Screen/loginPage.dart';
 import 'package:wite_dashboard/firebase_options.dart';
 
 Future<void> main() async {
@@ -33,7 +35,16 @@ class MyApp extends StatelessWidget {
         // primarySwatch: Colors.blue,
         primaryColor: _colorPrime,
       ),
-      home: Dashboard(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return const Dashboard();
+          } else {
+            return const LoginPage();
+          }
+        },
+      ),
     );
   }
 }
