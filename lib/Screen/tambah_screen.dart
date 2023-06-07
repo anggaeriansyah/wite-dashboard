@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TambahScreen extends StatefulWidget {
@@ -15,17 +17,16 @@ class TambahScreen extends StatefulWidget {
 }
 
 class _TambahScreenState extends State<TambahScreen> {
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  // XFile? selectedImage;
-
-  // Uint8List? _image;
-
   // Baru
   File? _imageFile;
   String? _imageUrl;
+
+  var currentStep = 0;
+  String selectedOption = 'Air Terjun';
 
   Future<void> _uploadImage() async {
     if (_imageFile == null) {
@@ -64,45 +65,28 @@ class _TambahScreenState extends State<TambahScreen> {
       if (pickedImage != null) {
         _imageFile = File(pickedImage.path);
         _uploadImage();
+        if (_imageUrl != null) {
+          deleteImageFromFirebase(_imageUrl!);
+        }
       }
     });
   }
 
   Future<void> deleteImageFromFirebase(String imageUrl) async {
-    // Mendapatkan referensi ke Firebase Storage berdasarkan URL gambar
     final ref = FirebaseStorage.instance.refFromURL(imageUrl);
-
     // Menghapus gambar dari Firebase Storage
     await ref.delete();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            "Tambah Data Wisata",
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: Form(
-            key: _formKey,
-            child: Container(
+  List<Step> getSteps() => [
+        Step(
+            state: currentStep > 0 ? StepState.complete : StepState.indexed,
+            isActive: currentStep >= 0,
+            title: Text("Identitas"),
+            content: Container(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  // ElevatedButton(
-                  //   style: ButtonStyle(
-                  //     backgroundColor:
-                  //         MaterialStateProperty.all<Color>(Colors.white),
-                  //   ),
-                  //   onPressed: UploadImage,
-                  //   child: const Text(
-                  //     'Pilih Gambar',
-                  //     style: TextStyle(color: Colors.blue),
-                  //   ),
-                  // ),
                   InkWell(
                     onTap: () => _pickImage(),
                     child: Container(
@@ -117,9 +101,13 @@ class _TambahScreenState extends State<TambahScreen> {
                         ),
                       ),
                       child: _imageUrl != null
-                          ? Image.network(
-                              _imageUrl!.toString(),
-                              fit: BoxFit.cover,
+                          ? ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10)),
+                              child: Image.network(
+                                _imageUrl!.toString(),
+                                fit: BoxFit.cover,
+                              ),
                             )
                           : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -141,6 +129,8 @@ class _TambahScreenState extends State<TambahScreen> {
                       labelText: "Nama Wisata",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
                     ),
                   ),
                   const SizedBox(
@@ -151,20 +141,53 @@ class _TambahScreenState extends State<TambahScreen> {
                       labelText: "Desa",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
                     ),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Kecamatan",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                    ),
+                  Row(
+                    children: [
+                      const Text("Kategori :"),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton<String>(
+                        itemHeight: kMinInteractiveDimension + 10,
+                        value: selectedOption,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedOption = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'Air Terjun',
+                          'Rekreasi',
+                          'Situs Prasejarah'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
+                  ),
+                  TextField(
+                    maxLines:
+                        null, // Mengatur jumlah baris menjadi null agar dapat menampung teks yang panjang
+                    decoration: InputDecoration(
+                      hintText: 'Deskripsi',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0)),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                    ),
                   ),
                   Visibility(
                     visible: _imageFile != null ? true : false,
@@ -183,39 +206,70 @@ class _TambahScreenState extends State<TambahScreen> {
                       ),
                     ),
                   ),
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
-                  // InkWell(
-                  //   onTap: _uploadImage,
-                  //   child: Container(
-                  //     color: Colors.red,
-                  //     width: 50,
-                  //     height: 40,
-                  //   ),
-                  // ),
-                  // ElevatedButton(
-                  //   style: ElevatedButton.styleFrom(
-                  //       primary: Theme.of(context).primaryColor),
-                  //   onPressed: _uploadImage,
-                  //   child: Text(
-                  //     'Simpan',
-                  //     style:
-                  //         TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                  //   ),
-                  // ),
                 ],
               ),
-            )));
+            )),
+        Step(
+            state: currentStep > 1 ? StepState.complete : StepState.indexed,
+            isActive: currentStep >= 1,
+            title: const Text("Operasional"),
+            content: Column(children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: "Penginapan",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                ),
+              ),
+            ])),
+        Step(
+            state: currentStep > 2 ? StepState.complete : StepState.indexed,
+            isActive: currentStep >= 2,
+            title: const Text("Selesai"),
+            content: const Text("page 3"))
+      ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            "Tambah Data Wisata",
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: Theme(
+          data: Theme.of(context).copyWith(
+              colorScheme:
+                  ColorScheme.light(primary: Theme.of(context).primaryColor)),
+          child: Stepper(
+            type: StepperType.horizontal,
+            steps: getSteps(),
+            currentStep: currentStep,
+            onStepContinue: () {
+              final isLastStep = currentStep == getSteps().length - 1;
+              if (isLastStep) {
+                print("Completed");
+              } else {
+                setState(() {
+                  currentStep += 1;
+                });
+              }
+            },
+            onStepCancel: currentStep == 0
+                ? null
+                : () {
+                    setState(() {
+                      currentStep -= 1;
+                    });
+                  },
+            onStepTapped: (step) => setState(() {
+              currentStep = step;
+            }),
+          ),
+        ));
   }
 }
-
-// Future<String> UploadFile(File file) async {
-//   FirebaseStorage storage = FirebaseStorage.instance;
-
-//   Reference reference = storage.ref().child('images/${file.path}');
-//   UploadTask uploadTask = reference.putFile(file);
-//   TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-//   String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-//   return downloadUrl;
-// }
