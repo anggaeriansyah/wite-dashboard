@@ -28,30 +28,47 @@ class _TambahScreenState extends State<TambahScreen> {
   // Baru
   File? _imageFile;
   String? _imageUrl;
-  bool switchValue = false;
+  bool switchValueTempClosed = false;
   bool switchValueCamp = false;
 
   var currentStep = 0;
-  String selectedOption = 'Air Terjun';
+  int _totalInnerSteps = 2;
+  var _currentInnerStep = 0;
+  String selectedOptionKategori = 'air-terjun';
   String selectedOptionDesa = 'Tapos I';
 
   void saveDataToFirestore() {
-    String name = _namaController.text;
-
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    firestore
-        .collection('users')
-        .add({
-          "nama": _namaController.text,
-          "image": _imageUrl,
-          "desc": _descController,
-          "kec": "Kecamatan Tenjolaya",
-          "tiket": _tiketController,
-          // tambahkan properti lain sesuai kebutuhan
-        })
-        .then((value) => print('Data berhasil disimpan'))
-        .catchError((error) => print('Gagal menyimpan data: $error'));
+    final wisata = <String, dynamic>{
+      "nama": _namaController.text,
+      "image": _imageUrl,
+      "desa": selectedOptionKategori,
+      "kec": "Kecamatan Tenjolaya",
+      "tiket": int.parse(_tiketController.text),
+      "desc": _descController.text,
+      "tempClosed": switchValueTempClosed,
+      "penginapan": switchValueCamp,
+      "kategori": selectedOptionKategori
+    };
+    // firestore
+    //     .collection('users')
+    //     .add({
+    //       "nama": _namaController.text,
+    //       "image": _imageUrl,
+    //       "desc": _descController.text,
+    //       "kec": "Kecamatan Tenjolaya",
+    //       "tiket": int.parse(_tiketController.text),
+    //       "tempClosed": switchValueTempClosed,
+    //       "penginapan": switchValueCamp,
+    //       // tambahkan properti lain sesuai kebutuhan
+    //     })
+    // .then((value) => print('Data berhasil disimpan'))
+    // .catchError((error) => print('Gagal menyimpan data: $error'));
+    firestore.collection("wisata").add(wisata).then((DocumentReference doc) =>
+        print('DocumentSnapshot added with ID: ${doc.id}'));
+    setState(() {
+      Navigator.pop(context);
+    });
   }
 
   Future<void> _uploadImage() async {
@@ -202,17 +219,14 @@ class _TambahScreenState extends State<TambahScreen> {
                       ),
                       DropdownButton<String>(
                         itemHeight: kMinInteractiveDimension + 5,
-                        value: selectedOption,
+                        value: selectedOptionKategori,
                         onChanged: (newValue) {
                           setState(() {
-                            selectedOption = newValue!;
+                            selectedOptionKategori = newValue!;
                           });
                         },
-                        items: <String>[
-                          'Air Terjun',
-                          'Rekreasi',
-                          'Situs Prasejarah'
-                        ].map<DropdownMenuItem<String>>((String value) {
+                        items: <String>['air-terjun', 'rekreasi', 'situs']
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -241,7 +255,7 @@ class _TambahScreenState extends State<TambahScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: Theme.of(context).primaryColor),
-                      onPressed: _uploadImage,
+                      onPressed: saveDataToFirestore,
                       child: const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 30, vertical: 12),
@@ -302,11 +316,11 @@ class _TambahScreenState extends State<TambahScreen> {
                     width: 10,
                   ),
                   Switch(
-                    value: switchValue,
+                    value: switchValueTempClosed,
                     activeColor: Theme.of(context).primaryColor,
                     onChanged: (bool newValue) {
                       setState(() {
-                        switchValue = newValue;
+                        switchValueTempClosed = newValue;
                       });
                     },
                   ),
@@ -337,7 +351,14 @@ class _TambahScreenState extends State<TambahScreen> {
             onStepContinue: () {
               final isLastStep = currentStep == getSteps().length - 1;
               if (isLastStep) {
-                print("Completed");
+                if (_namaController.text != 'null' ||
+                    _descController.text != '' ||
+                    _imageUrl != null ||
+                    _tiketController.text != "") {
+                  saveDataToFirestore();
+                  print("Completed");
+                }
+                print("Gagal");
               } else {
                 setState(() {
                   currentStep += 1;
