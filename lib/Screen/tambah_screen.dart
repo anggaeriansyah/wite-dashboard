@@ -21,12 +21,38 @@ class _TambahScreenState extends State<TambahScreen> {
   final picker = ImagePicker();
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  TextEditingController _namaController = TextEditingController();
+  TextEditingController _descController = TextEditingController();
+  TextEditingController _tiketController = TextEditingController();
+
   // Baru
   File? _imageFile;
   String? _imageUrl;
+  bool switchValue = false;
+  bool switchValueCamp = false;
 
   var currentStep = 0;
   String selectedOption = 'Air Terjun';
+  String selectedOptionDesa = 'Tapos I';
+
+  void saveDataToFirestore() {
+    String name = _namaController.text;
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    firestore
+        .collection('users')
+        .add({
+          "nama": _namaController.text,
+          "image": _imageUrl,
+          "desc": _descController,
+          "kec": "Kecamatan Tenjolaya",
+          "tiket": _tiketController,
+          // tambahkan properti lain sesuai kebutuhan
+        })
+        .then((value) => print('Data berhasil disimpan'))
+        .catchError((error) => print('Gagal menyimpan data: $error'));
+  }
 
   Future<void> _uploadImage() async {
     if (_imageFile == null) {
@@ -82,9 +108,9 @@ class _TambahScreenState extends State<TambahScreen> {
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
-            title: Text("Identitas"),
+            title: Text("Page 1"),
             content: Container(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.only(bottom: 10),
               child: Column(
                 children: [
                   InkWell(
@@ -125,6 +151,7 @@ class _TambahScreenState extends State<TambahScreen> {
                     height: 20,
                   ),
                   TextFormField(
+                    controller: _namaController,
                     decoration: InputDecoration(
                       labelText: "Nama Wisata",
                       border: OutlineInputBorder(
@@ -136,18 +163,37 @@ class _TambahScreenState extends State<TambahScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Desa",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
-                    ),
+                  Row(
+                    children: [
+                      const Text("Desa :"),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton<String>(
+                        itemHeight: kMinInteractiveDimension + 5,
+                        value: selectedOptionDesa,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedOptionDesa = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'Tapos I',
+                          'Tapos II',
+                          'Gunung Malang',
+                          'Cibitung Tengah'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
                   Row(
                     children: [
                       const Text("Kategori :"),
@@ -155,7 +201,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         width: 10,
                       ),
                       DropdownButton<String>(
-                        itemHeight: kMinInteractiveDimension + 10,
+                        itemHeight: kMinInteractiveDimension + 5,
                         value: selectedOption,
                         onChanged: (newValue) {
                           setState(() {
@@ -179,6 +225,7 @@ class _TambahScreenState extends State<TambahScreen> {
                     height: 10,
                   ),
                   TextField(
+                    controller: _descController,
                     maxLines:
                         null, // Mengatur jumlah baris menjadi null agar dapat menampung teks yang panjang
                     decoration: InputDecoration(
@@ -212,23 +259,60 @@ class _TambahScreenState extends State<TambahScreen> {
         Step(
             state: currentStep > 1 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 1,
-            title: const Text("Operasional"),
+            title: const Text("Page 2"),
+            content: Column(children: [
+              Row(
+                children: [
+                  const Text("Penginapan / Camping :"),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Switch(
+                    value: switchValueCamp,
+                    activeColor: Theme.of(context).primaryColor,
+                    onChanged: (bool newValue) {
+                      setState(() {
+                        switchValueCamp = newValue;
+                      });
+                    },
+                  ),
+                ],
+              )
+            ])),
+        Step(
+            state: currentStep > 2 ? StepState.complete : StepState.indexed,
+            isActive: currentStep >= 2,
+            title: const Text("Page 3"),
             content: Column(children: [
               TextFormField(
+                controller: _tiketController,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "Penginapan",
+                  labelText: "Tiket",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0)),
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
                 ),
               ),
-            ])),
-        Step(
-            state: currentStep > 2 ? StepState.complete : StepState.indexed,
-            isActive: currentStep >= 2,
-            title: const Text("Selesai"),
-            content: const Text("page 3"))
+              Row(
+                children: [
+                  const Text("Tutup Sementara :"),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Switch(
+                    value: switchValue,
+                    activeColor: Theme.of(context).primaryColor,
+                    onChanged: (bool newValue) {
+                      setState(() {
+                        switchValue = newValue;
+                      });
+                    },
+                  ),
+                ],
+              )
+            ]))
       ];
 
   @override
@@ -246,6 +330,7 @@ class _TambahScreenState extends State<TambahScreen> {
               colorScheme:
                   ColorScheme.light(primary: Theme.of(context).primaryColor)),
           child: Stepper(
+            elevation: 0,
             type: StepperType.horizontal,
             steps: getSteps(),
             currentStep: currentStep,
