@@ -640,7 +640,30 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                   Visibility(
-                    visible: _selasa,
+                      visible: _selasa,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _selasa24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _selasa24Checked = value!;
+                                  _selasaBukaController.text = '';
+                                  _selasaTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _selasa && !_selasa24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
@@ -706,7 +729,30 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                   Visibility(
-                    visible: _rabu,
+                      visible: _rabu,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _rabu24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _rabu24Checked = value!;
+                                  _rabuBukaController.text = '';
+                                  _rabuTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _rabu && !_rabu24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
@@ -772,7 +818,30 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                   Visibility(
-                    visible: _kamis,
+                      visible: _kamis,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _kamis24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _kamis24Checked = value!;
+                                  _kamisBukaController.text = '';
+                                  _kamisTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _kamis && !_kamis24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
@@ -838,7 +907,30 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                   Visibility(
-                    visible: _jumat,
+                      visible: _jumat,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _jumat24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _jumat24Checked = value!;
+                                  _jumatBukaController.text = '';
+                                  _jumatTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _jumat && !_jumat24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
@@ -904,7 +996,30 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                   Visibility(
-                    visible: _sabtu,
+                      visible: _sabtu,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _sabtu24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _sabtu24Checked = value!;
+                                  _sabtuBukaController.text = '';
+                                  _sabtuTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _sabtu && !_sabtu24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
@@ -970,7 +1085,30 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                   Visibility(
-                    visible: _minggu,
+                      visible: _minggu,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _minggu24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _minggu24Checked = value!;
+                                  _mingguBukaController.text = '';
+                                  _mingguTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _minggu && !_minggu24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
