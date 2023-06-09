@@ -24,12 +24,32 @@ class _TambahScreenState extends State<TambahScreen> {
   TextEditingController _namaController = TextEditingController();
   TextEditingController _descController = TextEditingController();
   TextEditingController _tiketController = TextEditingController();
+  //Jam Controller
+  TextEditingController _seninBukaController = TextEditingController();
+  TextEditingController _seninTutupController = TextEditingController();
+  TextEditingController _selasaBukaController = TextEditingController();
+  TextEditingController _selasaTutupController = TextEditingController();
+  TextEditingController _rabuBukaController = TextEditingController();
+  TextEditingController _rabuTutupController = TextEditingController();
+  TextEditingController _kamisBukaController = TextEditingController();
+  TextEditingController _kamisTutupController = TextEditingController();
+  TimeOfDay? _selectedOpeningTime;
+  TimeOfDay? _selectedClosingTime;
 
   // Baru
   File? _imageFile;
   String? _imageUrl;
   bool switchValueTempClosed = false;
   bool switchValueCamp = false;
+
+  //untuk form input operasional
+  bool _senin = false;
+  bool _selasa = false;
+  bool _rabu = false;
+  bool _kamis = false;
+  bool _jumat = false;
+  bool _sabtu = false;
+  bool _minggu = false;
 
   var currentStep = 0;
   int _totalInnerSteps = 2;
@@ -69,6 +89,76 @@ class _TambahScreenState extends State<TambahScreen> {
     setState(() {
       Navigator.pop(context);
     });
+  }
+
+  Future<void> _selectOpeningTime(BuildContext context) async {
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        _selectedOpeningTime = selectedTime;
+      });
+    }
+  }
+
+  Future<void> _selectClosingTime(BuildContext context) async {
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        _selectedClosingTime = selectedTime;
+      });
+    }
+  }
+
+  Future<void> _selectTimeSeninB(BuildContext context) async {
+    final TimeOfDay? seninBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (seninBukaTime != null) {
+      _seninBukaController.text = seninBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeSeninT(BuildContext context) async {
+    final TimeOfDay? seninTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (seninTutupTime != null) {
+      _seninTutupController.text = seninTutupTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeKamisB(BuildContext context) async {
+    final TimeOfDay? kamisBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (kamisBukaTime != null) {
+      _kamisBukaController.text = kamisBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeKamisT(BuildContext context) async {
+    final TimeOfDay? kamisTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (kamisTutupTime != null) {
+      _kamisTutupController.text = kamisTutupTime.format(context);
+    }
   }
 
   Future<void> _uploadImage() async {
@@ -250,23 +340,6 @@ class _TambahScreenState extends State<TambahScreen> {
                           EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
                     ),
                   ),
-                  Visibility(
-                    visible: _imageFile != null ? true : false,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Theme.of(context).primaryColor),
-                      onPressed: saveDataToFirestore,
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                        child: Text(
-                          'Simpan',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             )),
@@ -275,9 +348,185 @@ class _TambahScreenState extends State<TambahScreen> {
             isActive: currentStep >= 1,
             title: const Text("Page 2"),
             content: Column(children: [
+              Flexible(
+                flex: 0,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        'Operasional',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      Text('Buka/Tutup',
+                          style: TextStyle(fontWeight: FontWeight.w500))
+                    ]),
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  CheckboxListTile(
+                    // tileColor: Theme.of(context).primaryColor,
+                    // checkColor: Theme.of(context).primaryColor,
+                    // activeColor: Colors.white,
+
+                    // shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(10)),
+                    // contentPadding: EdgeInsets.zero, // Menghapus padding
+                    // dense: true,
+                    title: const Text(
+                      'Senin',
+                      // style: TextStyle(color: Colors.white),
+                    ),
+                    // subtitle:
+                    value: _senin,
+                    onChanged: (value) {
+                      setState(() {
+                        _seninBukaController.text = '';
+                        _seninTutupController.text = '';
+                        _senin = value!;
+                      });
+                    },
+                  ),
+                  Visibility(
+                    visible: _senin,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _seninBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeSeninB(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeSeninB(context);
+                            },
+                          ),
+                          TextFormField(
+                            controller: _seninTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeSeninT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeSeninT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Selasa'),
+                    value: _selasa,
+                    onChanged: (value) {
+                      setState(() {
+                        _selasa = value!;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Rabu'),
+                    value: _rabu,
+                    onChanged: (value) {
+                      setState(() {
+                        _rabu = value!;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    subtitle: !_kamis
+                        ? null
+                        : Column(
+                            children: [
+                              TextFormField(
+                                controller: _kamisBukaController,
+                                decoration: InputDecoration(
+                                  labelText: 'Buka',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(Icons.access_time),
+                                    onPressed: () {
+                                      _selectTimeKamisB(context);
+                                    },
+                                  ),
+                                ),
+                                readOnly: true,
+                                onTap: () {
+                                  _selectTimeKamisB(context);
+                                },
+                              ),
+                              TextFormField(
+                                controller: _kamisTutupController,
+                                decoration: InputDecoration(
+                                  labelText: 'Tutup',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(Icons.access_time),
+                                    onPressed: () {
+                                      _selectTimeKamisT(context);
+                                    },
+                                  ),
+                                ),
+                                readOnly: true,
+                                onTap: () {
+                                  _selectTimeKamisT(context);
+                                },
+                              ),
+                            ],
+                          ),
+                    title: const Text('Kamis'),
+                    value: _kamis,
+                    onChanged: (value) {
+                      setState(() {
+                        _kamis = value!;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Jumat'),
+                    value: _jumat,
+                    onChanged: (value) {
+                      setState(() {
+                        _jumat = value!;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Sabtu'),
+                    value: _sabtu,
+                    onChanged: (value) {
+                      setState(() {
+                        _sabtu = value!;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Minggu'),
+                    value: _minggu,
+                    onChanged: (value) {
+                      setState(() {
+                        _minggu = value!;
+                      });
+                    },
+                  )
+                ],
+              ),
               Row(
                 children: [
-                  const Text("Penginapan / Camping :"),
+                  const Text("Penginapan / Camping :",
+                      style: TextStyle(fontWeight: FontWeight.w500)),
                   const SizedBox(
                     width: 10,
                   ),
@@ -311,7 +560,8 @@ class _TambahScreenState extends State<TambahScreen> {
               ),
               Row(
                 children: [
-                  const Text("Tutup Sementara :"),
+                  const Text("Tutup Sementara :",
+                      style: TextStyle(fontWeight: FontWeight.w500)),
                   const SizedBox(
                     width: 10,
                   ),
