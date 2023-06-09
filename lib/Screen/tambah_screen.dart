@@ -33,6 +33,12 @@ class _TambahScreenState extends State<TambahScreen> {
   TextEditingController _rabuTutupController = TextEditingController();
   TextEditingController _kamisBukaController = TextEditingController();
   TextEditingController _kamisTutupController = TextEditingController();
+  TextEditingController _jumatBukaController = TextEditingController();
+  TextEditingController _jumatTutupController = TextEditingController();
+  TextEditingController _sabtuBukaController = TextEditingController();
+  TextEditingController _sabtuTutupController = TextEditingController();
+  TextEditingController _mingguBukaController = TextEditingController();
+  TextEditingController _mingguTutupController = TextEditingController();
   TimeOfDay? _selectedOpeningTime;
   TimeOfDay? _selectedClosingTime;
 
@@ -41,6 +47,13 @@ class _TambahScreenState extends State<TambahScreen> {
   String? _imageUrl;
   bool switchValueTempClosed = false;
   bool switchValueCamp = false;
+  bool _senin24Checked = false;
+  bool _selasa24Checked = false;
+  bool _rabu24Checked = false;
+  bool _kamis24Checked = false;
+  bool _jumat24Checked = false;
+  bool _sabtu24Checked = false;
+  bool _minggu24Checked = false;
 
   //untuk form input operasional
   bool _senin = false;
@@ -68,7 +81,45 @@ class _TambahScreenState extends State<TambahScreen> {
       "desc": _descController.text,
       "tempClosed": switchValueTempClosed,
       "penginapan": switchValueCamp,
-      "kategori": selectedOptionKategori
+      "kategori": selectedOptionKategori,
+      "hariOp": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu, _minggu],
+      "hariOp": [
+        _senin
+            ? _senin24Checked
+                ? "Buka 24 jam"
+                : '$_seninBukaController - $_seninTutupController'
+            : 'Tutup',
+        _selasa
+            ? _selasa24Checked
+                ? "Buka 24 jam"
+                : '$_selasaBukaController - $_selasaTutupController'
+            : 'Tutup',
+        _rabu
+            ? _rabu24Checked
+                ? "Buka 24 jam"
+                : '$_rabuBukaController - $_rabuTutupController'
+            : 'Tutup',
+        _kamis
+            ? _kamis24Checked
+                ? "Buka 24 jam"
+                : '$_kamisBukaController - $_kamisTutupController'
+            : 'Tutup',
+        _jumat
+            ? _jumat24Checked
+                ? "Buka 24 jam"
+                : '$_jumatBukaController - $_jumatTutupController'
+            : 'Tutup',
+        _sabtu
+            ? _sabtu24Checked
+                ? "Buka 24 jam"
+                : '$_sabtuBukaController - $_sabtuTutupController'
+            : 'Tutup',
+        _minggu
+            ? _minggu24Checked
+                ? "Buka 24 jam"
+                : '$_mingguBukaController - $_mingguTutupController'
+            : 'Tutup',
+      ],
     };
     // firestore
     //     .collection('users')
@@ -139,6 +190,50 @@ class _TambahScreenState extends State<TambahScreen> {
     }
   }
 
+  Future<void> _selectTimeSelasaB(BuildContext context) async {
+    final TimeOfDay? selasaBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selasaBukaTime != null) {
+      _selasaBukaController.text = selasaBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeSelasaT(BuildContext context) async {
+    final TimeOfDay? selasaTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selasaTutupTime != null) {
+      _selasaTutupController.text = selasaTutupTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeRabuB(BuildContext context) async {
+    final TimeOfDay? rabuBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (rabuBukaTime != null) {
+      _rabuBukaController.text = rabuBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeRabuT(BuildContext context) async {
+    final TimeOfDay? rabuTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (rabuTutupTime != null) {
+      _rabuTutupController.text = rabuTutupTime.format(context);
+    }
+  }
+
   Future<void> _selectTimeKamisB(BuildContext context) async {
     final TimeOfDay? kamisBukaTime = await showTimePicker(
       context: context,
@@ -161,6 +256,73 @@ class _TambahScreenState extends State<TambahScreen> {
     }
   }
 
+  Future<void> _selectTimeJumatB(BuildContext context) async {
+    final TimeOfDay? jumatBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (jumatBukaTime != null) {
+      _jumatBukaController.text = jumatBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeJumatT(BuildContext context) async {
+    final TimeOfDay? jumatTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (jumatTutupTime != null) {
+      _jumatTutupController.text = jumatTutupTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeSabtuB(BuildContext context) async {
+    final TimeOfDay? sabtuBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (sabtuBukaTime != null) {
+      _sabtuBukaController.text = sabtuBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeSabtuT(BuildContext context) async {
+    final TimeOfDay? sabtuTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (sabtuTutupTime != null) {
+      _sabtuTutupController.text = sabtuTutupTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeMingguB(BuildContext context) async {
+    final TimeOfDay? mingguBukaTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (mingguBukaTime != null) {
+      _mingguBukaController.text = mingguBukaTime.format(context);
+    }
+  }
+
+  Future<void> _selectTimeMingguT(BuildContext context) async {
+    final TimeOfDay? mingguTutupTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (mingguTutupTime != null) {
+      _mingguTutupController.text = mingguTutupTime.format(context);
+    }
+  }
+
+  //untuk upload image
   Future<void> _uploadImage() async {
     if (_imageFile == null) {
       // Jika gambar belum dipilih, tidak melakukan upload
@@ -365,30 +527,54 @@ class _TambahScreenState extends State<TambahScreen> {
               Column(
                 children: [
                   CheckboxListTile(
-                    // tileColor: Theme.of(context).primaryColor,
-                    // checkColor: Theme.of(context).primaryColor,
-                    // activeColor: Colors.white,
-
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(10)),
-                    // contentPadding: EdgeInsets.zero, // Menghapus padding
-                    // dense: true,
-                    title: const Text(
-                      'Senin',
-                      // style: TextStyle(color: Colors.white),
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Senin',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                    // subtitle:
                     value: _senin,
                     onChanged: (value) {
                       setState(() {
                         _seninBukaController.text = '';
                         _seninTutupController.text = '';
+                        _senin24Checked = false;
                         _senin = value!;
                       });
                     },
                   ),
                   Visibility(
-                    visible: _senin,
+                      visible: _senin,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Text('Buka 24 Jam'),
+                            Checkbox(
+                              activeColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              value: _senin24Checked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _senin24Checked = value!;
+                                  _seninBukaController.text = '';
+                                  _seninTutupController.text = '';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                  Visibility(
+                    visible: _senin && !_senin24Checked,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
@@ -430,97 +616,401 @@ class _TambahScreenState extends State<TambahScreen> {
                     ),
                   ),
                   CheckboxListTile(
-                    title: const Text('Selasa'),
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Selasa',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     value: _selasa,
                     onChanged: (value) {
                       setState(() {
+                        _selasaBukaController.text = '';
+                        _selasaTutupController.text = '';
+                        _selasa24Checked = false;
                         _selasa = value!;
                       });
                     },
                   ),
+                  Visibility(
+                    visible: _selasa,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _selasaBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeSelasaB(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeSelasaB(context);
+                            },
+                          ),
+                          TextFormField(
+                            controller: _selasaTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeSelasaT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeSelasaT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   CheckboxListTile(
-                    title: const Text('Rabu'),
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Rabu',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     value: _rabu,
                     onChanged: (value) {
                       setState(() {
+                        _rabuBukaController.text = '';
+                        _rabuTutupController.text = '';
                         _rabu = value!;
+                        _rabu24Checked = false;
                       });
                     },
                   ),
-                  CheckboxListTile(
-                    subtitle: !_kamis
-                        ? null
-                        : Column(
-                            children: [
-                              TextFormField(
-                                controller: _kamisBukaController,
-                                decoration: InputDecoration(
-                                  labelText: 'Buka',
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.access_time),
-                                    onPressed: () {
-                                      _selectTimeKamisB(context);
-                                    },
-                                  ),
-                                ),
-                                readOnly: true,
-                                onTap: () {
-                                  _selectTimeKamisB(context);
+                  Visibility(
+                    visible: _rabu,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _rabuBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeRabuB(context);
                                 },
                               ),
-                              TextFormField(
-                                controller: _kamisTutupController,
-                                decoration: InputDecoration(
-                                  labelText: 'Tutup',
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.access_time),
-                                    onPressed: () {
-                                      _selectTimeKamisT(context);
-                                    },
-                                  ),
-                                ),
-                                readOnly: true,
-                                onTap: () {
-                                  _selectTimeKamisT(context);
-                                },
-                              ),
-                            ],
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeRabuB(context);
+                            },
                           ),
-                    title: const Text('Kamis'),
+                          TextFormField(
+                            controller: _rabuTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeRabuT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeRabuT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  CheckboxListTile(
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Kamis',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     value: _kamis,
                     onChanged: (value) {
                       setState(() {
+                        _kamisBukaController.text = '';
+                        _kamisTutupController.text = '';
                         _kamis = value!;
+                        _kamis24Checked = false;
                       });
                     },
                   ),
+                  Visibility(
+                    visible: _kamis,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _kamisBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeKamisB(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeKamisB(context);
+                            },
+                          ),
+                          TextFormField(
+                            controller: _kamisTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeKamisT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeKamisT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   CheckboxListTile(
-                    title: const Text('Jumat'),
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        "Jum\'at",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     value: _jumat,
                     onChanged: (value) {
                       setState(() {
+                        _jumatBukaController.text = '';
+                        _jumatTutupController.text = '';
                         _jumat = value!;
+                        _jumat24Checked = false;
                       });
                     },
                   ),
+                  Visibility(
+                    visible: _jumat,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _jumatBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeJumatB(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeJumatB(context);
+                            },
+                          ),
+                          TextFormField(
+                            controller: _jumatTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeJumatT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeJumatT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   CheckboxListTile(
-                    title: const Text('Sabtu'),
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Sabtu',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     value: _sabtu,
                     onChanged: (value) {
                       setState(() {
+                        _sabtuBukaController.text = '';
+                        _sabtuTutupController.text = '';
                         _sabtu = value!;
+                        _sabtu24Checked = false;
                       });
                     },
                   ),
+                  Visibility(
+                    visible: _sabtu,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _sabtuBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeSabtuB(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeSabtuB(context);
+                            },
+                          ),
+                          TextFormField(
+                            controller: _sabtuTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeSabtuT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeSabtuT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   CheckboxListTile(
-                    title: const Text('Minggu'),
+                    activeColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'Minggu',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     value: _minggu,
                     onChanged: (value) {
                       setState(() {
+                        _mingguBukaController.text = '';
+                        _mingguTutupController.text = '';
                         _minggu = value!;
+                        _minggu24Checked = false;
                       });
                     },
-                  )
+                  ),
+                  Visibility(
+                    visible: _minggu,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _mingguBukaController,
+                            decoration: InputDecoration(
+                              labelText: 'Buka',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeMingguB(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeMingguB(context);
+                            },
+                          ),
+                          TextFormField(
+                            controller: _mingguTutupController,
+                            decoration: InputDecoration(
+                              labelText: 'Tutup',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.access_time),
+                                onPressed: () {
+                                  _selectTimeMingguT(context);
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              _selectTimeMingguT(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Row(
