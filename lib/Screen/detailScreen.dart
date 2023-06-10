@@ -191,8 +191,9 @@ class _DetailScreenState extends State<DetailScreen> {
     }
 
     if (widget.wisata.data()['hariOp'][nxt] == true) {
-      opn =
-          'Buka $hr pukul ${widget.wisata.data()['jamOp'][nxt].substring(0, 5)}';
+      opn = widget.wisata.data()['jamOp'][nxt] == "Buka 24 jam"
+          ? 'Buka $hr'
+          : 'Buka $hr pukul ${widget.wisata.data()['jamOp'][nxt].substring(0, 5)}';
     } else {
       opn = 'Buka segera';
     }
@@ -1198,6 +1199,11 @@ class _DetailScreenState extends State<DetailScreen> {
                         return Stack(
                           alignment: Alignment.topLeft,
                           children: [
+                            // Container(
+                            //   height: 10,
+                            //   width: 10,
+                            //   color: Colors.amber,
+                            // )
                             Container(
                               width: 250,
                               height: 150,

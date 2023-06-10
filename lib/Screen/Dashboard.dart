@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,12 @@ class _DashboardState extends State<Dashboard> {
 
   getData() {
     return _searchResults;
+  }
+
+  Future<void> deleteImageFromFirebase(String imageUrl) async {
+    final ref = FirebaseStorage.instance.refFromURL(imageUrl);
+    // Menghapus gambar dari Firebase Storage
+    await ref.delete();
   }
 
   // Stream<Object>? convertQuerySnapshotToStream(_JsonQuerySnapshot querySnapshot) {
@@ -661,6 +668,8 @@ data wisata''',
                                                       onTap: () {
                                                         _dialogBuilder(
                                                             context, document);
+                                                        deleteImageFromFirebase(
+                                                            document['image']);
                                                         // document.reference
                                                         //     .delete()
                                                         //     .then((value) => print(

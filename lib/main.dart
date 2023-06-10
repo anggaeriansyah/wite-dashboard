@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // primarySwatch: Colors.blue,
+        accentColor: Colors.grey.shade600,
+        textSelectionColor: Colors.grey.shade300,
         primaryColor: _colorPrime,
       ),
       home: StreamBuilder<User?>(

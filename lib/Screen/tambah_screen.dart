@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
 
 class TambahScreen extends StatefulWidget {
   // const MyWidget({Key? key}) : super(key: key);
@@ -19,7 +21,9 @@ class TambahScreen extends StatefulWidget {
 class _TambahScreenState extends State<TambahScreen> {
   // final _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
+  final picker1 = ImagePicker();
   FirebaseStorage storage = FirebaseStorage.instance;
+  FirebaseStorage storage1 = FirebaseStorage.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _namaController = TextEditingController();
   TextEditingController _descController = TextEditingController();
@@ -45,6 +49,9 @@ class _TambahScreenState extends State<TambahScreen> {
   // Baru
   File? _imageFile;
   String? _imageUrl;
+  File? _imageFile1;
+  String? _imageUrl1;
+  List<String>? downloadUrls;
   bool switchValueTempClosed = false;
   bool switchValueCamp = false;
   bool _senin24Checked = false;
@@ -64,6 +71,22 @@ class _TambahScreenState extends State<TambahScreen> {
   bool _sabtu = false;
   bool _minggu = false;
 
+  //validasi form
+  bool _isNamaEmpty = false;
+  bool _isTiketEmpty = false;
+
+  void validateNama(value) {
+    setState(() {
+      _isNamaEmpty = _namaController.text.isEmpty || value == '';
+    });
+  }
+
+  void validateTiket(value) {
+    setState(() {
+      _isTiketEmpty = _tiketController.text.isEmpty || value == '';
+    });
+  }
+
   var currentStep = 0;
   int _totalInnerSteps = 2;
   var _currentInnerStep = 0;
@@ -75,7 +98,7 @@ class _TambahScreenState extends State<TambahScreen> {
     final wisata = <String, dynamic>{
       "nama": _namaController.text,
       "image": _imageUrl,
-      "desa": selectedOptionKategori,
+      "desa": selectedOptionDesa,
       "kec": "Kecamatan Tenjolaya",
       "tiket": int.parse(_tiketController.text),
       "desc": _descController.text,
@@ -83,43 +106,44 @@ class _TambahScreenState extends State<TambahScreen> {
       "penginapan": switchValueCamp,
       "kategori": selectedOptionKategori,
       "hariOp": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu, _minggu],
-      "hariOp": [
+      "jamOp": [
         _senin
             ? _senin24Checked
                 ? "Buka 24 jam"
-                : '$_seninBukaController - $_seninTutupController'
+                : '${_seninBukaController.text} - ${_seninTutupController.text}'
             : 'Tutup',
         _selasa
             ? _selasa24Checked
                 ? "Buka 24 jam"
-                : '$_selasaBukaController - $_selasaTutupController'
+                : '${_selasaBukaController.text} - ${_selasaTutupController.text}'
             : 'Tutup',
         _rabu
             ? _rabu24Checked
                 ? "Buka 24 jam"
-                : '$_rabuBukaController - $_rabuTutupController'
+                : '${_rabuBukaController.text} - ${_rabuTutupController.text}'
             : 'Tutup',
         _kamis
             ? _kamis24Checked
                 ? "Buka 24 jam"
-                : '$_kamisBukaController - $_kamisTutupController'
+                : '${_kamisBukaController.text} - ${_kamisTutupController.text}'
             : 'Tutup',
         _jumat
             ? _jumat24Checked
                 ? "Buka 24 jam"
-                : '$_jumatBukaController - $_jumatTutupController'
+                : '${_jumatBukaController.text} - ${_jumatTutupController.text}'
             : 'Tutup',
         _sabtu
             ? _sabtu24Checked
                 ? "Buka 24 jam"
-                : '$_sabtuBukaController - $_sabtuTutupController'
+                : '${_sabtuBukaController.text} - ${_sabtuTutupController.text}'
             : 'Tutup',
         _minggu
             ? _minggu24Checked
                 ? "Buka 24 jam"
-                : '$_mingguBukaController - $_mingguTutupController'
+                : '${_mingguBukaController.text} - ${_mingguTutupController.text}'
             : 'Tutup',
       ],
+      "imageGaleries": downloadUrls
     };
     // firestore
     //     .collection('users')
@@ -140,6 +164,35 @@ class _TambahScreenState extends State<TambahScreen> {
     setState(() {
       Navigator.pop(context);
     });
+  }
+
+  Future<List<String>> uploadImagesToFirebase(List<XFile> imageFiles) async {
+    List<String> _downloadUrls = [];
+
+    // Mendapatkan referensi ke Firebase Storage
+    final storageRef = FirebaseStorage.instance.ref().child('images');
+
+    // Mengunggah setiap gambar ke Firebase Storage
+    for (var imageFile in imageFiles) {
+      // Mendapatkan nama unik untuk file gambar
+      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      // Mengupload gambar ke Firebase Storage
+      final uploadTask =
+          storageRef.child(fileName).putFile(File(imageFile.path));
+
+      // Menunggu penyelesaian upload
+      final TaskSnapshot snapshot = await uploadTask;
+
+      // Mengambil URL download gambar
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      // Menambahkan URL download ke dalam list
+      _downloadUrls.add(downloadUrl);
+    }
+
+    // Mengembalikan list URL download gambar
+    return _downloadUrls;
   }
 
   Future<void> _selectOpeningTime(BuildContext context) async {
@@ -352,6 +405,34 @@ class _TambahScreenState extends State<TambahScreen> {
     }
   }
 
+  Future<void> _uploadImage1() async {
+    if (_imageFile1 == null) {
+      // Jika gambar belum dipilih, tidak melakukan upload
+      return print("object");
+    }
+    try {
+      // Upload gambar ke Firebase Storage
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('images/${DateTime.now().toString()}.jpg');
+      firebase_storage.UploadTask uploadTask = ref.putFile(_imageFile1!);
+
+      // Menunggu penyelesaian upload
+      await uploadTask.whenComplete(() {});
+
+      // Dapatkan URL download gambar
+      String downloadUrl = await ref.getDownloadURL();
+
+      // Simpan URL download gambar
+      setState(() {
+        _imageUrl1 = downloadUrl;
+      });
+    } catch (e) {
+      // Tangani kesalahan jika ada
+      print('Error uploading image: $e');
+    }
+  }
+
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
@@ -362,6 +443,21 @@ class _TambahScreenState extends State<TambahScreen> {
         _uploadImage();
         if (_imageUrl != null) {
           deleteImageFromFirebase(_imageUrl!);
+        }
+      }
+    });
+  }
+
+  Future<void> _pickImage1() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedImage != null) {
+        _imageFile1 = File(pickedImage.path);
+        _uploadImage1();
+        if (_imageUrl1 != null) {
+          deleteImageFromFirebase(_imageUrl1!);
         }
       }
     });
@@ -402,6 +498,12 @@ class _TambahScreenState extends State<TambahScreen> {
                               child: Image.network(
                                 _imageUrl!.toString(),
                                 fit: BoxFit.cover,
+                                loadingBuilder: (context, child, progress) {
+                                  if (progress == null) {
+                                    return child;
+                                  }
+                                  return CircularProgressIndicator();
+                                },
                               ),
                             )
                           : Column(
@@ -420,9 +522,13 @@ class _TambahScreenState extends State<TambahScreen> {
                     height: 20,
                   ),
                   TextFormField(
+                    onChanged: validateNama,
                     controller: _namaController,
                     decoration: InputDecoration(
                       labelText: "Nama Wisata",
+                      errorText: _isNamaEmpty
+                          ? 'Nama wisata tidak boleh kosong'
+                          : null,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
                       contentPadding:
@@ -450,6 +556,9 @@ class _TambahScreenState extends State<TambahScreen> {
                           'Tapos I',
                           'Tapos II',
                           'Gunung Malang',
+                          'Gunung Mulya',
+                          'Situ Daun',
+                          'Cinangneng',
                           'Cibitung Tengah'
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
@@ -1174,12 +1283,84 @@ class _TambahScreenState extends State<TambahScreen> {
             state: currentStep > 2 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 2,
             title: const Text("Page 3"),
-            content: Column(children: [
+            content:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: const Text("Galeri :",
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      List<XFile> selectedImages =
+                          await ImagePicker().pickMultiImage();
+
+                      if (selectedImages.isNotEmpty) {
+                        var urls = await uploadImagesToFirebase(selectedImages);
+                        setState(() {
+                          downloadUrls = urls;
+                        });
+
+                        // Lakukan sesuatu dengan URL download gambar
+                        // Misalnya, simpan URL ke database atau tampilkan di UI
+                      }
+                    },
+                    child: Container(
+                      color: Theme.of(context).primaryColor,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Iconsax.add,
+                            color: Colors.white,
+                          ),
+                          const Text("Tambah",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              downloadUrls == null
+                  ? SizedBox()
+                  : Container(
+                      height: 100, // Atur tinggi sesuai kebutuhan
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:
+                            downloadUrls!.length, // Jumlah gambar dalam galeri
+                        itemBuilder: (context, index) {
+                          return Padding(
+                              padding: EdgeInsets.all(8),
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                child: Image.network(
+                                  downloadUrls![index],
+                                  height: 50,
+                                  width: 150, // Atur lebar sesuai kebutuhan
+                                  fit: BoxFit.cover,
+                                ),
+                              ));
+                        },
+                      ),
+                    ),
+              const SizedBox(height: 10),
               TextFormField(
+                onChanged: validateTiket,
                 controller: _tiketController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: "Tiket",
+                  errorText:
+                      _isNamaEmpty ? 'Nama wisata tidak boleh kosong' : null,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0)),
                   contentPadding:
@@ -1229,14 +1410,34 @@ class _TambahScreenState extends State<TambahScreen> {
             onStepContinue: () {
               final isLastStep = currentStep == getSteps().length - 1;
               if (isLastStep) {
-                if (_namaController.text != 'null' ||
-                    _descController.text != '' ||
-                    _imageUrl != null ||
-                    _tiketController.text != "") {
+                if (_namaController.text.isNotEmpty &&
+                        _imageUrl != null &&
+                        _tiketController.text.isNotEmpty &&
+                        !_senin ||
+                    (_senin24Checked ||
+                        (_seninBukaController.text.isNotEmpty &&
+                            _seninTutupController.text.isNotEmpty))) {
                   saveDataToFirestore();
                   print("Completed");
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Data tidak lengkap'),
+                        content: Text('lengkapi data terlebih dahulu'),
+                        actions: [
+                          TextButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }
-                print("Gagal");
               } else {
                 setState(() {
                   currentStep += 1;
