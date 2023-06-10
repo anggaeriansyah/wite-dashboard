@@ -11,19 +11,19 @@ import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 
-class TambahScreen extends StatefulWidget {
+class UpdateScreen extends StatefulWidget {
   // const MyWidget({Key? key}) : super(key: key);
+  final documentId;
 
+  UpdateScreen({required this.documentId});
   @override
-  State<TambahScreen> createState() => _TambahScreenState();
+  State<UpdateScreen> createState() => _UpdateScreenState();
 }
 
-class _TambahScreenState extends State<TambahScreen> {
+class _UpdateScreenState extends State<UpdateScreen> {
   // final _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
-  final picker1 = ImagePicker();
   FirebaseStorage storage = FirebaseStorage.instance;
-  FirebaseStorage storage1 = FirebaseStorage.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _namaController = TextEditingController();
   TextEditingController _descController = TextEditingController();
@@ -45,6 +45,7 @@ class _TambahScreenState extends State<TambahScreen> {
   TextEditingController _mingguTutupController = TextEditingController();
   TimeOfDay? _selectedOpeningTime;
   TimeOfDay? _selectedClosingTime;
+  String selectedOptionKategori = 'air-terjun';
 
   // Baru
   File? _imageFile;
@@ -73,6 +74,205 @@ class _TambahScreenState extends State<TambahScreen> {
   bool _isNamaEmpty = false;
   bool _isTiketEmpty = false;
 
+  List<String> galeri() {
+    List<String> galeries = [];
+    var a = widget.documentId.data()['imageGaleries'];
+    for (var i = 0; i < a.length; i++) {
+      galeries.add(widget.documentId.data()['imageGaleries'][i]);
+    }
+    return galeries;
+  }
+
+  Future<void> fetchPreviousData() async {
+    final data = widget.documentId.data();
+    _namaController.text = data['nama'];
+    _descController.text = data['desc'].toString();
+    _tiketController.text = data['tiket'].toString();
+    selectedOptionDesa = data['desa'].toString();
+    switchValueTempClosed = data['tempClosed'];
+    switchValueCamp = data['penginapan'];
+    _imageUrl = data['image'];
+    // var a = data['imageGaleries'] as List<String>;
+    downloadUrls = galeri();
+
+    _senin = data['hariOp'][0];
+    _selasa = data['hariOp'][1];
+    _rabu = data['hariOp'][2];
+    _kamis = data['hariOp'][3];
+    _jumat = data['hariOp'][4];
+    _sabtu = data['hariOp'][5];
+    _minggu = data['hariOp'][6];
+
+    var seninBuka =
+        data['jamOp'][0] == 'Buka 24 jam' || data['jamOp'][0] == 'Tutup'
+            ? data['jamOp'][0].toString()
+            : data['jamOp'][0].toString().substring(0, 5);
+    if (seninBuka == 'Buka 24 jam') {
+      _senin24Checked = true;
+    } else if (seninBuka == 'Tutup') {
+      _senin = false;
+    } else {
+      _seninBukaController.text = seninBuka;
+    }
+    var seninTutup =
+        data['jamOp'][0] == 'Buka 24 jam' || data['jamOp'][0] == 'Tutup'
+            ? data['jamOp'][0].toString()
+            : data['jamOp'][0].toString().substring(8, 13);
+    if (seninTutup == 'Buka 24 jam') {
+      _senin24Checked = true;
+    } else if (seninTutup == 'Tutup') {
+      _senin = false;
+    } else {
+      _seninTutupController.text = seninTutup;
+    }
+
+    var selasaBuka =
+        data['jamOp'][1] == 'Buka 24 jam' || data['jamOp'][1] == 'Tutup'
+            ? data['jamOp'][1].toString()
+            : data['jamOp'][1].toString().substring(0, 5);
+    if (selasaBuka == 'Buka 24 jam') {
+      _selasa24Checked = true;
+    } else if (selasaBuka == 'Tutup') {
+      _selasa = false;
+    } else {
+      _selasaBukaController.text = selasaBuka;
+    }
+    var selasaTutup =
+        data['jamOp'][1] == 'Buka 24 jam' || data['jamOp'][1] == 'Tutup'
+            ? data['jamOp'][1].toString()
+            : data['jamOp'][1].toString().substring(8, 13);
+    if (selasaTutup == 'Buka 24 jam') {
+      _selasa24Checked = true;
+    } else if (selasaTutup == 'Tutup') {
+      _selasa = false;
+    } else {
+      _selasaTutupController.text = selasaTutup;
+    }
+
+    var rabuBuka =
+        data['jamOp'][2] == 'Buka 24 jam' || data['jamOp'][2] == 'Tutup'
+            ? data['jamOp'][2].toString()
+            : data['jamOp'][2].toString().substring(0, 5);
+    if (rabuBuka == 'Buka 24 jam') {
+      _rabu24Checked = true;
+    } else if (rabuBuka == 'Tutup') {
+      _rabu = false;
+    } else {
+      _rabuBukaController.text = rabuBuka;
+    }
+    var rabuTutup =
+        data['jamOp'][2] == 'Buka 24 jam' || data['jamOp'][2] == 'Tutup'
+            ? data['jamOp'][2].toString()
+            : data['jamOp'][2].toString().substring(8, 13);
+    if (rabuTutup == 'Buka 24 jam') {
+      _rabu24Checked = true;
+    } else if (rabuTutup == 'Tutup') {
+      _rabu = false;
+    } else {
+      _rabuTutupController.text = rabuTutup;
+    }
+
+    var kamisBuka =
+        data['jamOp'][3] == 'Buka 24 jam' || data['jamOp'][3] == 'Tutup'
+            ? data['jamOp'][3].toString()
+            : data['jamOp'][3].toString().substring(0, 5);
+    if (kamisBuka == 'Buka 24 jam') {
+      _kamis24Checked = true;
+    } else if (kamisBuka == 'Tutup') {
+      _kamis = false;
+    } else {
+      _kamisBukaController.text = kamisBuka;
+    }
+    var kamisTutup =
+        data['jamOp'][3] == 'Buka 24 jam' || data['jamOp'][3] == 'Tutup'
+            ? data['jamOp'][3].toString()
+            : data['jamOp'][3].toString().substring(8, 13);
+    if (kamisTutup == 'Buka 24 jam') {
+      _kamis24Checked = true;
+    } else if (kamisTutup == 'Tutup') {
+      _kamis = false;
+    } else {
+      _kamisTutupController.text = kamisTutup;
+    }
+
+    var jumatBuka =
+        data['jamOp'][4] == 'Buka 24 jam' || data['jamOp'][4] == 'Tutup'
+            ? data['jamOp'][4].toString()
+            : data['jamOp'][4].toString().substring(0, 5);
+    if (jumatBuka == 'Buka 24 jam') {
+      _jumat24Checked = true;
+    } else if (jumatBuka == 'Tutup') {
+      _jumat = false;
+    } else {
+      _jumatBukaController.text = jumatBuka;
+    }
+    var jumatTutup =
+        data['jamOp'][4] == 'Buka 24 jam' || data['jamOp'][4] == 'Tutup'
+            ? data['jamOp'][4].toString()
+            : data['jamOp'][4].toString().substring(8, 13);
+    if (jumatTutup == 'Buka 24 jam') {
+      _jumat24Checked = true;
+    } else if (jumatTutup == 'Tutup') {
+      _jumat = false;
+    } else {
+      _jumatTutupController.text = jumatTutup;
+    }
+
+    var sabtuBuka =
+        data['jamOp'][5] == 'Buka 24 jam' || data['jamOp'][5] == 'Tutup'
+            ? data['jamOp'][5].toString()
+            : data['jamOp'][5].toString().substring(0, 5);
+    if (sabtuBuka == 'Buka 24 jam') {
+      _sabtu24Checked = true;
+    } else if (sabtuBuka == 'Tutup') {
+      _sabtu = false;
+    } else {
+      _sabtuBukaController.text = sabtuBuka;
+    }
+    var sabtuTutup =
+        data['jamOp'][5] == 'Buka 24 jam' || data['jamOp'][5] == 'Tutup'
+            ? data['jamOp'][5].toString()
+            : data['jamOp'][5].toString().substring(8, 13);
+    if (sabtuTutup == 'Buka 24 jam') {
+      _sabtu24Checked = true;
+    } else if (sabtuTutup == 'Tutup') {
+      _sabtu = false;
+    } else {
+      _sabtuTutupController.text = sabtuTutup;
+    }
+
+    var mingguBuka =
+        data['jamOp'][6] == 'Buka 24 jam' || data['jamOp'][6] == 'Tutup'
+            ? data['jamOp'][6].toString()
+            : data['jamOp'][6].toString().substring(0, 5);
+    if (mingguBuka == 'Buka 24 jam') {
+      _minggu24Checked = true;
+    } else if (mingguBuka == 'Tutup') {
+      _minggu = false;
+    } else {
+      _mingguBukaController.text = mingguBuka;
+    }
+    var mingguTutup =
+        data['jamOp'][6] == 'Buka 24 jam' || data['jamOp'][6] == 'Tutup'
+            ? data['jamOp'][6].toString()
+            : data['jamOp'][6].toString().substring(8, 13);
+    if (mingguTutup == 'Buka 24 jam') {
+      _minggu24Checked = true;
+    } else if (mingguTutup == 'Tutup') {
+      _minggu = false;
+    } else {
+      _mingguTutupController.text = mingguTutup;
+    }
+  }
+  // getDataOpBuka(value){
+  //   var jamBuka = value == 'Buka 24 jam'
+  //       ? value.toString()
+  //       : value.substring(0, 5);
+  //   if (jamBuka == 'Buka 24 jam') {
+  //     _senin24Checked = true;
+  //   }
+  //   }
+
   void validateNama(value) {
     setState(() {
       _isNamaEmpty = _namaController.text.isEmpty || value == '';
@@ -88,8 +288,15 @@ class _TambahScreenState extends State<TambahScreen> {
   var currentStep = 0;
   int _totalInnerSteps = 2;
   var _currentInnerStep = 0;
-  String selectedOptionKategori = 'air-terjun';
-  String selectedOptionDesa = 'Tapos I';
+  var selectedOptionDesa;
+  // String selectedOptionDesa = 'Tapos I';
+
+  @override
+  void initState() {
+    super.initState();
+    galeri();
+    fetchPreviousData();
+  }
 
   void saveDataToFirestore() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -495,7 +702,7 @@ class _TambahScreenState extends State<TambahScreen> {
                   ),
                   Row(
                     children: [
-                      const Text("Desa :"),
+                      Text("Desa : "),
                       const SizedBox(
                         width: 10,
                       ),
@@ -1242,6 +1449,13 @@ class _TambahScreenState extends State<TambahScreen> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(
                 children: [
+                  // Text(
+                  //   '${widget.documentId.data()['imageGaleries'][0]}',
+                  //   softWrap: true,
+                  //   style: TextStyle(color: Colors.red),
+                  // ),
+                  // Text('${widget.documentId.data()['imageGaleries'][1]}',
+                  //     softWrap: true, style: TextStyle(color: Colors.red)),
                   Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: const Text("Galeri :",
@@ -1348,8 +1562,8 @@ class _TambahScreenState extends State<TambahScreen> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text(
-            "Tambah Data Wisata",
+          title: Text(
+            "Update Data ${widget.documentId.data()['nama']}",
           ),
           backgroundColor: Theme.of(context).primaryColor,
         ),

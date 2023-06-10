@@ -9,6 +9,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:wite_dashboard/Screen/detailScreen.dart';
 import 'package:wite_dashboard/Screen/edit_screen.dart';
 import 'package:wite_dashboard/Screen/tambah_screen.dart';
+import 'package:wite_dashboard/Screen/update_screen.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -658,11 +659,17 @@ data wisata''',
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Icon(
-                                                      Icons.edit,
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      size: 20.0,
+                                                    InkWell(
+                                                      onTap: () => Get.to(
+                                                          UpdateScreen(
+                                                              documentId:
+                                                                  document)),
+                                                      child: Icon(
+                                                        Icons.edit,
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        size: 20.0,
+                                                      ),
                                                     ),
                                                     InkWell(
                                                       onTap: () {
