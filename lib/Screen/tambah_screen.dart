@@ -5,11 +5,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:wite_dashboard/Screen/Dashboard.dart';
+import 'package:get/get.dart';
 
 class TambahScreen extends StatefulWidget {
   // const MyWidget({Key? key}) : super(key: key);
@@ -20,6 +25,9 @@ class TambahScreen extends StatefulWidget {
 
 class _TambahScreenState extends State<TambahScreen> {
   // final _formKey = GlobalKey<FormState>();
+  late GoogleMapController _mapController;
+  LatLng? _selectedLocation;
+  Set<Marker> _markers = {};
   final picker = ImagePicker();
   final picker1 = ImagePicker();
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -141,7 +149,9 @@ class _TambahScreenState extends State<TambahScreen> {
                 : '${_mingguBukaController.text} - ${_mingguTutupController.text}'
             : 'Tutup',
       ],
-      "imageGaleries": downloadUrls
+      "imageGaleries": downloadUrls == null ? [] : downloadUrls,
+      "latitude": _selectedLocation!.latitude,
+      "longitude": _selectedLocation!.longitude,
     };
     // firestore
     //     .collection('users')
@@ -566,6 +576,54 @@ class _TambahScreenState extends State<TambahScreen> {
                           vertical: 16.0, horizontal: 10),
                     ),
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  // GoogleMap(
+                  //   onMapCreated: (controller) {
+                  //     _mapController = controller;
+                  //   },
+                  //   onTap: (LatLng latLng) {
+                  //     setState(() {
+                  //       _selectedLocation = latLng;
+                  //     });
+                  //   },
+                  //   initialCameraPosition: CameraPosition(
+                  //     target: LatLng(0, 0), // Koordinat awal peta
+                  //     zoom: 15, // Tingkat zoom awal
+                  //   ),
+                  // ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     // Proses saat tombol ditekan
+                  //     if (_selectedLocation != null) {
+                  //       // Lakukan sesuatu dengan _selectedLocation
+                  //       print(
+                  //           'Lokasi terpilih: ${_selectedLocation!.latitude}, ${_selectedLocation!.longitude}');
+                  //     } else {
+                  //       // Tampilkan pesan kesalahan jika lokasi belum dipilih
+                  //       showDialog(
+                  //         context: context,
+                  //         builder: (BuildContext context) {
+                  //           return AlertDialog(
+                  //             title: Text('Kesalahan'),
+                  //             content:
+                  //                 Text('Silakan pilih lokasi terlebih dahulu.'),
+                  //             actions: [
+                  //               TextButton(
+                  //                 child: Text('OK'),
+                  //                 onPressed: () {
+                  //                   Navigator.pop(context);
+                  //                 },
+                  //               ),
+                  //             ],
+                  //           );
+                  //         },
+                  //       );
+                  //     }
+                  //   },
+                  //   child: Text('Simpan'),
+                  // ),
                 ],
               ),
             )),
@@ -1329,6 +1387,54 @@ class _TambahScreenState extends State<TambahScreen> {
                       vertical: 16.0, horizontal: 10),
                 ),
               ),
+              // height: 200,
+              // width: MediaQuery.of(context).size.width,
+              const SizedBox(height: 10),
+              Expanded(
+                flex: 0,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  height: 200,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    child: GoogleMap(
+                      zoomGesturesEnabled: true,
+                      onCameraMove: (controller) {
+                        _mapController = controller as GoogleMapController;
+                      },
+                      onMapCreated: (controller) {
+                        _mapController = controller;
+                      },
+                      gestureRecognizers: Set()
+                        ..add(Factory<PanGestureRecognizer>(
+                            () => PanGestureRecognizer())),
+                      onTap: (LatLng latLng) {
+                        setState(() {
+                          _selectedLocation = latLng;
+                          _markers
+                              .clear(); // Hapus marker sebelumnya (jika ada)
+                          _markers.add(
+                            Marker(
+                              markerId: const MarkerId('selected_location'),
+                              position: _selectedLocation!,
+                            ),
+                          );
+                        });
+                      },
+                      markers: _markers,
+                      initialCameraPosition: const CameraPosition(
+                        target: LatLng(
+                            -6.6400000, 106.708000), // Koordinat awal peta
+                        zoom: 15, // Tingkat zoom awal
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
               Row(
                 children: [
                   const Text("Tutup Sementara :",
@@ -1346,7 +1452,7 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                   ),
                 ],
-              )
+              ),
             ]))
       ];
 
@@ -1374,6 +1480,8 @@ class _TambahScreenState extends State<TambahScreen> {
               if (isLastStep) {
                 if (_namaController.text.isNotEmpty &&
                     _tiketController.text.isNotEmpty &&
+                    _selectedLocation?.latitude != null &&
+                    _selectedLocation?.longitude != null &&
                     _imageUrl != null &&
                     (!_senin ||
                         (_senin24Checked ||
@@ -1415,11 +1523,12 @@ class _TambahScreenState extends State<TambahScreen> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(10))),
                                     child: const Text(
-                                      'Update',
+                                      'Simpan',
                                       style: TextStyle(color: Colors.white),
                                     )),
                                 onPressed: () {
                                   saveDataToFirestore();
+                                  Get.to(Dashboard());
                                   print("Completed");
                                 },
                               ),
