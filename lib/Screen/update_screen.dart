@@ -305,7 +305,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
     super.initState();
     galeri();
     fetchPreviousData();
-    _markers.clear(); // Hapus marker sebelumnya (jika ada)
     _markers.add(
       Marker(
         markerId: const MarkerId('selected_location'),
