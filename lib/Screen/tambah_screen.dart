@@ -428,7 +428,7 @@ class _TambahScreenState extends State<TambahScreen> {
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
-            title: Text("Page 1"),
+            title: const Text("Page 1"),
             content: Container(
               padding: const EdgeInsets.only(bottom: 10),
               child: Column(
@@ -457,7 +457,7 @@ class _TambahScreenState extends State<TambahScreen> {
                                   if (progress == null) {
                                     return child;
                                   }
-                                  return CircularProgressIndicator();
+                                  return const CircularProgressIndicator();
                                 },
                               ),
                             )
@@ -486,8 +486,8 @@ class _TambahScreenState extends State<TambahScreen> {
                           : null,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 10),
                     ),
                   ),
                   const SizedBox(
@@ -562,8 +562,8 @@ class _TambahScreenState extends State<TambahScreen> {
                       hintText: 'Deskripsi',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 10),
                     ),
                   ),
                 ],
@@ -597,7 +597,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Senin',
@@ -620,7 +621,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -648,7 +649,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSeninB(context);
                                 },
@@ -664,7 +665,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSeninT(context);
                                 },
@@ -686,7 +687,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Selasa',
@@ -709,7 +711,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -737,7 +739,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSelasaB(context);
                                 },
@@ -753,7 +755,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSelasaT(context);
                                 },
@@ -775,7 +777,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Rabu',
@@ -798,7 +801,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -826,7 +829,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeRabuB(context);
                                 },
@@ -842,7 +845,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeRabuT(context);
                                 },
@@ -864,7 +867,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Kamis',
@@ -887,7 +891,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -915,7 +919,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeKamisB(context);
                                 },
@@ -931,7 +935,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeKamisT(context);
                                 },
@@ -953,7 +957,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         "Jum\'at",
@@ -976,7 +981,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1004,7 +1009,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeJumatB(context);
                                 },
@@ -1020,7 +1025,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeJumatT(context);
                                 },
@@ -1042,7 +1047,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Sabtu',
@@ -1065,7 +1071,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1093,7 +1099,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSabtuB(context);
                                 },
@@ -1109,7 +1115,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSabtuT(context);
                                 },
@@ -1131,7 +1137,8 @@ class _TambahScreenState extends State<TambahScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Minggu',
@@ -1154,7 +1161,7 @@ class _TambahScreenState extends State<TambahScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1182,7 +1189,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeMingguB(context);
                                 },
@@ -1198,7 +1205,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeMingguT(context);
                                 },
@@ -1242,9 +1249,9 @@ class _TambahScreenState extends State<TambahScreen> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: const Text("Galeri :",
+                  const Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Text("Galeri :",
                         style: TextStyle(fontWeight: FontWeight.w500)),
                   ),
                   GestureDetector(
@@ -1264,15 +1271,15 @@ class _TambahScreenState extends State<TambahScreen> {
                     },
                     child: Container(
                       color: Theme.of(context).primaryColor,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(
                             Iconsax.add,
                             color: Colors.white,
                           ),
-                          const Text("Tambah",
+                          Text("Tambah",
                               style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white)),
@@ -1284,7 +1291,7 @@ class _TambahScreenState extends State<TambahScreen> {
               ),
               const SizedBox(height: 5),
               downloadUrls == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Container(
                       height: 100, // Atur tinggi sesuai kebutuhan
                       child: ListView.builder(
@@ -1293,10 +1300,10 @@ class _TambahScreenState extends State<TambahScreen> {
                             downloadUrls!.length, // Jumlah gambar dalam galeri
                         itemBuilder: (context, index) {
                           return Padding(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               child: ClipRRect(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                    const BorderRadius.all(Radius.circular(10)),
                                 child: Image.network(
                                   downloadUrls![index],
                                   height: 50,
@@ -1318,8 +1325,8 @@ class _TambahScreenState extends State<TambahScreen> {
                       _isNamaEmpty ? 'Nama wisata tidak boleh kosong' : null,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0)),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 10),
                 ),
               ),
               Row(
@@ -1437,11 +1444,11 @@ class _TambahScreenState extends State<TambahScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Data tidak lengkap'),
-                        content: Text('lengkapi data terlebih dahulu'),
+                        title: const Text('Data tidak lengkap'),
+                        content: const Text('lengkapi data terlebih dahulu'),
                         actions: [
                           TextButton(
-                            child: Text('OK'),
+                            child: const Text('OK'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
