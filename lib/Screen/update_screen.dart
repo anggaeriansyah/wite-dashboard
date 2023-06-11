@@ -5,9 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
@@ -23,7 +26,10 @@ class UpdateScreen extends StatefulWidget {
 }
 
 class _UpdateScreenState extends State<UpdateScreen> {
-  // final _formKey = GlobalKey<FormState>();
+  // final _formKey =ormState>();
+  late GoogleMapController _mapController;
+  LatLng? _selectedLocation;
+  Set<Marker> _markers = {};
   final picker = ImagePicker();
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -96,6 +102,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
     _imageUrl = data['image'];
     // var a = data['imageGaleries'] as List<String>;
     downloadUrls = galeri();
+    _selectedLocation = LatLng(data['latitude'], data['longitude']);
 
     _senin = data['hariOp'][0];
     _selasa = data['hariOp'][1];
@@ -298,6 +305,13 @@ class _UpdateScreenState extends State<UpdateScreen> {
     super.initState();
     galeri();
     fetchPreviousData();
+    _markers.clear(); // Hapus marker sebelumnya (jika ada)
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('selected_location'),
+        position: _selectedLocation!,
+      ),
+    );
   }
 
   void saveDataToFirestore() {
@@ -409,7 +423,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
                 : '${_mingguBukaController.text} - ${_mingguTutupController.text}'
             : 'Tutup',
       ],
-      "imageGaleries": downloadUrls
+      "imageGaleries": downloadUrls,
+      "latitude": _selectedLocation!.latitude,
+      "longitude": _selectedLocation!.longitude,
     };
     firestore
         .collection("wisata")
@@ -1623,6 +1639,51 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       vertical: 16.0, horizontal: 10),
                 ),
               ),
+              const SizedBox(height: 10),
+              Expanded(
+                flex: 0,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  height: 200,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    child: GoogleMap(
+                      zoomGesturesEnabled: true,
+                      onCameraMove: (controller) {
+                        _mapController = controller as GoogleMapController;
+                      },
+                      onMapCreated: (controller) {
+                        _mapController = controller;
+                      },
+                      gestureRecognizers: Set()
+                        ..add(Factory<PanGestureRecognizer>(
+                            () => PanGestureRecognizer())),
+                      onTap: (LatLng latLng) {
+                        setState(() {
+                          _selectedLocation = latLng;
+                          _markers
+                              .clear(); // Hapus marker sebelumnya (jika ada)
+                          _markers.add(
+                            Marker(
+                              markerId: const MarkerId('selected_location'),
+                              position: _selectedLocation!,
+                            ),
+                          );
+                        });
+                      },
+                      markers: _markers,
+                      initialCameraPosition: const CameraPosition(
+                        target: LatLng(
+                            -6.6400000, 106.708000), // Koordinat awal peta
+                        zoom: 15, // Tingkat zoom awal
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   const Text("Tutup Sementara :",
@@ -1715,7 +1776,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                                     )),
                                 onPressed: () {
                                   UpdateDataToFirestore();
-                                  Get.to(Dashboard());
+                                  // Get.to(Dashboard());
+                                  Navigator.pop(context);
                                   print("Completed");
                                 },
                               ),
