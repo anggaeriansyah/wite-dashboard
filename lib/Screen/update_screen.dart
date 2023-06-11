@@ -350,25 +350,80 @@ class _UpdateScreenState extends State<UpdateScreen> {
       ],
       "imageGaleries": downloadUrls
     };
-    // firestore
-    //     .collection('users')
-    //     .add({
-    //       "nama": _namaController.text,
-    //       "image": _imageUrl,
-    //       "desc": _descController.text,
-    //       "kec": "Kecamatan Tenjolaya",
-    //       "tiket": int.parse(_tiketController.text),
-    //       "tempClosed": switchValueTempClosed,
-    //       "penginapan": switchValueCamp,
-    //       // tambahkan properti lain sesuai kebutuhan
-    //     })
-    // .then((value) => print('Data berhasil disimpan'))
-    // .catchError((error) => print('Gagal menyimpan data: $error'));
     firestore.collection("wisata").add(wisata).then((DocumentReference doc) =>
         print('DocumentSnapshot added with ID: ${doc.id}'));
     setState(() {
       Navigator.pop(context);
     });
+  }
+
+  void UpdateDataToFirestore() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    Map<String, dynamic> wisata = {
+      "nama": _namaController.text,
+      "image": _imageUrl,
+      "desa": selectedOptionDesa,
+      "kec": "Kecamatan Tenjolaya",
+      "tiket": int.parse(_tiketController.text),
+      "desc": _descController.text,
+      "tempClosed": switchValueTempClosed,
+      "penginapan": switchValueCamp,
+      "kategori": selectedOptionKategori,
+      "hariOp": [_senin, _selasa, _rabu, _kamis, _jumat, _sabtu, _minggu],
+      "jamOp": [
+        _senin
+            ? _senin24Checked
+                ? "Buka 24 jam"
+                : '${_seninBukaController.text} - ${_seninTutupController.text}'
+            : 'Tutup',
+        _selasa
+            ? _selasa24Checked
+                ? "Buka 24 jam"
+                : '${_selasaBukaController.text} - ${_selasaTutupController.text}'
+            : 'Tutup',
+        _rabu
+            ? _rabu24Checked
+                ? "Buka 24 jam"
+                : '${_rabuBukaController.text} - ${_rabuTutupController.text}'
+            : 'Tutup',
+        _kamis
+            ? _kamis24Checked
+                ? "Buka 24 jam"
+                : '${_kamisBukaController.text} - ${_kamisTutupController.text}'
+            : 'Tutup',
+        _jumat
+            ? _jumat24Checked
+                ? "Buka 24 jam"
+                : '${_jumatBukaController.text} - ${_jumatTutupController.text}'
+            : 'Tutup',
+        _sabtu
+            ? _sabtu24Checked
+                ? "Buka 24 jam"
+                : '${_sabtuBukaController.text} - ${_sabtuTutupController.text}'
+            : 'Tutup',
+        _minggu
+            ? _minggu24Checked
+                ? "Buka 24 jam"
+                : '${_mingguBukaController.text} - ${_mingguTutupController.text}'
+            : 'Tutup',
+      ],
+      "imageGaleries": downloadUrls
+    };
+    firestore
+        .collection("wisata")
+        .doc(widget.documentId.id)
+        .update(wisata)
+        .then((_) {
+      print('Data updated successfully');
+      setState(() {
+        Navigator.pop(context);
+      });
+    }).catchError((error) {
+      print('Error updating data: $error');
+    });
+    // docRef.update(wisata);
+    // .then((_) => print('Data updated successfully'))
+    // .catchError((error) => print('Error updating data: $error'));
   }
 
   Future<List<String>> uploadImagesToFirebase(List<XFile> imageFiles) async {
@@ -635,7 +690,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
-            title: Text("Page 1"),
+            title: const Text("Page 1"),
             content: Container(
               padding: const EdgeInsets.only(bottom: 10),
               child: Column(
@@ -693,8 +748,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           : null,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 10),
                     ),
                   ),
                   const SizedBox(
@@ -702,7 +757,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   ),
                   Row(
                     children: [
-                      Text("Desa : "),
+                      const Text("Desa : "),
                       const SizedBox(
                         width: 10,
                       ),
@@ -769,8 +824,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       hintText: 'Deskripsi',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0)),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 10),
                     ),
                   ),
                 ],
@@ -804,7 +859,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Senin',
@@ -827,7 +883,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -855,7 +911,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSeninB(context);
                                 },
@@ -871,7 +927,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSeninT(context);
                                 },
@@ -893,7 +949,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Selasa',
@@ -916,7 +973,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -944,7 +1001,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSelasaB(context);
                                 },
@@ -960,7 +1017,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSelasaT(context);
                                 },
@@ -982,7 +1039,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Rabu',
@@ -1005,7 +1063,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1033,7 +1091,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeRabuB(context);
                                 },
@@ -1049,7 +1107,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeRabuT(context);
                                 },
@@ -1071,7 +1129,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Kamis',
@@ -1094,7 +1153,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1122,7 +1181,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeKamisB(context);
                                 },
@@ -1138,7 +1197,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeKamisT(context);
                                 },
@@ -1160,7 +1219,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         "Jum\'at",
@@ -1183,7 +1243,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1211,7 +1271,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeJumatB(context);
                                 },
@@ -1227,7 +1287,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeJumatT(context);
                                 },
@@ -1249,7 +1309,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Sabtu',
@@ -1272,7 +1333,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1300,7 +1361,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSabtuB(context);
                                 },
@@ -1316,7 +1377,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeSabtuT(context);
                                 },
@@ -1338,7 +1399,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     title: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(
                         'Minggu',
@@ -1361,7 +1423,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Text('Buka 24 Jam'),
+                            const Text('Buka 24 Jam'),
                             Checkbox(
                               activeColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
@@ -1389,7 +1451,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Buka',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeMingguB(context);
                                 },
@@ -1405,7 +1467,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             decoration: InputDecoration(
                               labelText: 'Tutup',
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.access_time),
+                                icon: const Icon(Icons.access_time),
                                 onPressed: () {
                                   _selectTimeMingguT(context);
                                 },
@@ -1456,9 +1518,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   // ),
                   // Text('${widget.documentId.data()['imageGaleries'][1]}',
                   //     softWrap: true, style: TextStyle(color: Colors.red)),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: const Text("Galeri :",
+                  const Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Text("Galeri :",
                         style: TextStyle(fontWeight: FontWeight.w500)),
                   ),
                   GestureDetector(
@@ -1469,7 +1531,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       if (selectedImages.isNotEmpty) {
                         var urls = await uploadImagesToFirebase(selectedImages);
                         setState(() {
-                          downloadUrls = urls;
+                          downloadUrls?.addAll(urls);
                         });
 
                         // Lakukan sesuatu dengan URL download gambar
@@ -1477,16 +1539,19 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       }
                     },
                     child: Container(
-                      color: Theme.of(context).primaryColor,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(
                             Iconsax.add,
                             color: Colors.white,
                           ),
-                          const Text("Tambah",
+                          Text("Tambah",
                               style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white)),
@@ -1498,7 +1563,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
               ),
               const SizedBox(height: 5),
               downloadUrls == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Container(
                       height: 100, // Atur tinggi sesuai kebutuhan
                       child: ListView.builder(
@@ -1507,17 +1572,37 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             downloadUrls!.length, // Jumlah gambar dalam galeri
                         itemBuilder: (context, index) {
                           return Padding(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                child: Image.network(
-                                  downloadUrls![index],
-                                  height: 50,
-                                  width: 150, // Atur lebar sesuai kebutuhan
-                                  fit: BoxFit.cover,
-                                ),
-                              ));
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  child: Stack(children: [
+                                    Image.network(
+                                      downloadUrls![index],
+                                      height: 100,
+                                      width: 150, // Atur lebar sesuai kebutuhan
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Positioned(
+                                      top: 5,
+                                      right: 5,
+                                      child: GestureDetector(
+                                        onTap: downloadUrls!.isEmpty
+                                            ? null
+                                            : () {
+                                                setState(() {
+                                                  downloadUrls!.remove(
+                                                      downloadUrls?[index]
+                                                          .toString());
+                                                });
+                                              },
+                                        child: const Icon(
+                                          Icons.disabled_by_default_rounded,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    )
+                                  ])));
                         },
                       ),
                     ),
@@ -1532,8 +1617,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       _isNamaEmpty ? 'Nama wisata tidak boleh kosong' : null,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0)),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 10),
                 ),
               ),
               Row(
@@ -1553,7 +1638,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     },
                   ),
                 ],
-              )
+              ),
             ]))
       ];
 
@@ -1563,6 +1648,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
+            // "${widget.documentId.id}",
             "Update Data ${widget.documentId.data()['nama']}",
           ),
           backgroundColor: Theme.of(context).primaryColor,
@@ -1580,21 +1666,79 @@ class _UpdateScreenState extends State<UpdateScreen> {
               final isLastStep = currentStep == getSteps().length - 1;
               if (isLastStep) {
                 if (_namaController.text.isNotEmpty &&
-                        _imageUrl != null &&
-                        _tiketController.text.isNotEmpty &&
-                        !_senin ||
-                    (_senin24Checked ||
-                        (_seninBukaController.text.isNotEmpty &&
-                            _seninTutupController.text.isNotEmpty))) {
-                  saveDataToFirestore();
-                  print("Completed");
+                    _imageUrl != null &&
+                    _tiketController.text.isNotEmpty &&
+                    (!_senin ||
+                        (_senin24Checked ||
+                            (_seninBukaController.text.isNotEmpty &&
+                                _seninTutupController.text.isNotEmpty)))) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
+                        actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        title: const Text('Perhatian!'),
+                        content: const Text(
+                          'Apakah anda yakin ingin menyimpan perubahan wisata ini?',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        actions: <Widget>[
+                          const Divider(
+                            thickness: 1,
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: const Text(
+                                      'Update',
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                                onPressed: () {
+                                  UpdateDataToFirestore();
+                                  print("Completed");
+                                },
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: const Text('Kembali'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 } else {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Data tidak lengkap'),
-                        content: Text('lengkapi data terlebih dahulu'),
+                        title: const Text('Data tidak lengkap'),
+                        content: const Text('lengkapi data terlebih dahulu'),
                         actions: [
                           TextButton(
                             child: Text('OK'),

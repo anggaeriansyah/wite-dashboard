@@ -732,7 +732,9 @@ Future<void> _dialogBuilder(BuildContext context, data) {
                 child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
-                    color: Colors.red,
+                    decoration: const BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: const Text(
                       'Hapus',
                       style: TextStyle(color: Colors.white),

@@ -1366,14 +1366,72 @@ class _TambahScreenState extends State<TambahScreen> {
               final isLastStep = currentStep == getSteps().length - 1;
               if (isLastStep) {
                 if (_namaController.text.isNotEmpty &&
-                        _imageUrl != null &&
-                        _tiketController.text.isNotEmpty &&
-                        !_senin ||
-                    (_senin24Checked ||
-                        (_seninBukaController.text.isNotEmpty &&
-                            _seninTutupController.text.isNotEmpty))) {
-                  saveDataToFirestore();
-                  print("Completed");
+                    _tiketController.text.isNotEmpty &&
+                    _imageUrl != null &&
+                    (!_senin ||
+                        (_senin24Checked ||
+                            (_seninBukaController.text.isNotEmpty &&
+                                _seninTutupController.text.isNotEmpty)))) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
+                        actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        title: const Text('Perhatian!'),
+                        content: const Text(
+                          'Apakah anda yakin ingin menyimpan wisata ini?',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        actions: <Widget>[
+                          const Divider(
+                            thickness: 1,
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: const Text(
+                                      'Update',
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                                onPressed: () {
+                                  saveDataToFirestore();
+                                  print("Completed");
+                                },
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: const Text('Kembali'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 } else {
                   showDialog(
                     context: context,
