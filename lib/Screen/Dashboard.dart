@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:wite_dashboard/Screen/detailScreen.dart';
 import 'package:wite_dashboard/Screen/edit_screen.dart';
+import 'package:wite_dashboard/Screen/loginPage.dart';
 import 'package:wite_dashboard/Screen/tambah_screen.dart';
 import 'package:wite_dashboard/Screen/update_screen.dart';
 
@@ -98,7 +99,66 @@ class _DashboardState extends State<Dashboard> {
           actions: [
             InkWell(
               onTap: () {
-                FirebaseAuth.instance.signOut();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      contentPadding:
+                          const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
+                      actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      title: const Text('Perhatian!'),
+                      content: const Text(
+                        'Apakah anda yakin ingin Logout?',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      actions: <Widget>[
+                        const Divider(
+                          thickness: 1,
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                textStyle:
+                                    Theme.of(context).textTheme.labelLarge,
+                              ),
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: const Text(
+                                    'Logout',
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                FirebaseAuth.instance.signOut();
+                                print("Logout");
+                              },
+                            ),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                textStyle:
+                                    Theme.of(context).textTheme.labelLarge,
+                              ),
+                              child: const Text('Batal'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),

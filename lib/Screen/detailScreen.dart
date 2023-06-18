@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:glass/glass.dart';
+import 'package:iconsax/iconsax.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:wite_dashboard/Screen/weatherScreen.dart';
 
 class DetailScreen extends StatefulWidget {
   // const DetailScreen({Key? key}) : super(key: key);
@@ -579,25 +581,26 @@ class _DetailScreenState extends State<DetailScreen> {
           style: const TextStyle(color: Colors.black),
         ),
         actions: [
-          // GestureDetector(
-          //   onTap: () {
-          //     if (_isActive) {
-          //       _getPopup();
-          //     } else {
-          //       _getCurrentPosition();
-          //     }
-          //   },
-          //   child: const Padding(
-          //     padding: EdgeInsets.only(right: 20, left: 20),
-          //     child: Icon(
-          //       FontAwesomeIcons.route,
-          //       // Icons.place_rounded,
-          //       // FontAwesomeIcons.locationDot,
-          //       color: Colors.black,
-          //       // size: 30,
-          //     ),
-          //   ),
-          // ),
+          GestureDetector(
+            onTap: () {
+              Get.to(
+                  WeatherScreen(
+                    nama: widget.wisata.data()['nama'],
+                    lat: widget.wisata.data()['latitude'],
+                    long: widget.wisata.data()['longitude'],
+                  ),
+                  transition: Transition.downToUp);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: const Icon(
+                Iconsax.cloud,
+                // FontAwesomeIcons.cloudBolt,
+                size: 30,
+                color: Colors.black,
+              ),
+            ),
+          ),
         ],
       ),
       body: ListView(
