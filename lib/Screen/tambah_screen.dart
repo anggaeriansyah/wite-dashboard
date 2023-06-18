@@ -1565,7 +1565,7 @@ class _TambahScreenState extends State<TambahScreen> {
                                       )),
                                   onPressed: () {
                                     saveDataToFirestore();
-                                    Get.to(Dashboard());
+                                    Get.to(const Dashboard());
                                     print("Completed");
                                   },
                                 ),
@@ -1638,7 +1638,7 @@ class _TambahScreenState extends State<TambahScreen> {
                             (_minggu24Checked ||
                                 (_mingguBukaController.text.isNotEmpty &&
                                     _mingguTutupController.text.isNotEmpty)))
-                    ? Padding(
+                    ? const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Icon(
                           Icons.save,
@@ -1674,7 +1674,31 @@ class _TambahScreenState extends State<TambahScreen> {
                     (!_senin ||
                         (_senin24Checked ||
                             (_seninBukaController.text.isNotEmpty &&
-                                _seninTutupController.text.isNotEmpty)))) {
+                                _seninTutupController.text.isNotEmpty))) &&
+                    (!_selasa ||
+                        (_selasa24Checked ||
+                            (_selasaBukaController.text.isNotEmpty &&
+                                _selasaTutupController.text.isNotEmpty))) &&
+                    (!_rabu ||
+                        (_rabu24Checked ||
+                            (_rabuBukaController.text.isNotEmpty &&
+                                _rabuTutupController.text.isNotEmpty))) &&
+                    (!_kamis ||
+                        (_kamis24Checked ||
+                            (_kamisBukaController.text.isNotEmpty &&
+                                _kamisTutupController.text.isNotEmpty))) &&
+                    (!_jumat ||
+                        (_jumat24Checked ||
+                            (_jumatBukaController.text.isNotEmpty &&
+                                _jumatTutupController.text.isNotEmpty))) &&
+                    (!_sabtu ||
+                        (_sabtu24Checked ||
+                            (_sabtuBukaController.text.isNotEmpty &&
+                                _sabtuTutupController.text.isNotEmpty))) &&
+                    (!_minggu ||
+                        (_minggu24Checked ||
+                            (_mingguBukaController.text.isNotEmpty &&
+                                _mingguTutupController.text.isNotEmpty)))) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -1716,7 +1740,7 @@ class _TambahScreenState extends State<TambahScreen> {
                                     )),
                                 onPressed: () {
                                   saveDataToFirestore();
-                                  Get.to(Dashboard());
+                                  Get.to(const Dashboard());
                                   print("Completed");
                                 },
                               ),
