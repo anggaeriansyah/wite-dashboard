@@ -190,10 +190,12 @@ class _TambahScreenState extends State<TambahScreen> {
             : 'Tutup',
       ],
       "imageGaleries": downloadUrls == null ? [] : downloadUrls,
-      "latitude":
-          mapsOrLatlong ? _selectedLocation!.latitude : _latController.text,
-      "longitude":
-          mapsOrLatlong ? _selectedLocation!.longitude : _longController.text,
+      "latitude": mapsOrLatlong
+          ? _selectedLocation!.latitude
+          : double.parse(_latController.text),
+      "longitude": mapsOrLatlong
+          ? _selectedLocation!.longitude
+          : double.parse(_longController.text),
     };
     // firestore
     //     .collection('users')

@@ -102,7 +102,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
     _imageUrl = data['image'];
     // var a = data['imageGaleries'] as List<String>;
     downloadUrls = galeri();
-    _selectedLocation = LatLng(data['latitude'], data['longitude']);
+    _selectedLocation =
+        LatLng(data['latitude'] as double, data['longitude'] as double);
 
     _senin = data['hariOp'][0];
     _selasa = data['hariOp'][1];
