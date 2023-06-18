@@ -1,21 +1,15 @@
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:wite_dashboard/Screen/Dashboard.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class TambahScreen extends StatefulWidget {
   // const MyWidget({Key? key}) : super(key: key);
@@ -1678,174 +1672,187 @@ class _TambahScreenState extends State<TambahScreen> {
           ),
           backgroundColor: Theme.of(context).primaryColor,
           actions: [
-            GestureDetector(
-                onTap: () {
-                  if (_namaController.text.isNotEmpty &&
-                      _tiketController.text.isNotEmpty &&
-                      ((_selectedLocation?.latitude != null &&
-                              _selectedLocation?.longitude != null) ||
-                          (_latController.text.isNotEmpty &&
-                              _longController.text.isNotEmpty)) &&
-                      _imageUrl != null &&
-                      (!_senin ||
-                          (_senin24Checked ||
-                              (_seninBukaController.text.isNotEmpty &&
-                                  _seninTutupController.text.isNotEmpty))) &&
-                      (!_selasa ||
-                          (_selasa24Checked ||
-                              (_selasaBukaController.text.isNotEmpty &&
-                                  _selasaTutupController.text.isNotEmpty))) &&
-                      (!_rabu ||
-                          (_rabu24Checked ||
-                              (_rabuBukaController.text.isNotEmpty &&
-                                  _rabuTutupController.text.isNotEmpty))) &&
-                      (!_kamis ||
-                          (_kamis24Checked ||
-                              (_kamisBukaController.text.isNotEmpty &&
-                                  _kamisTutupController.text.isNotEmpty))) &&
-                      (!_jumat ||
-                          (_jumat24Checked ||
-                              (_jumatBukaController.text.isNotEmpty &&
-                                  _jumatTutupController.text.isNotEmpty))) &&
-                      (!_sabtu ||
-                          (_sabtu24Checked ||
-                              (_sabtuBukaController.text.isNotEmpty &&
-                                  _sabtuTutupController.text.isNotEmpty))) &&
-                      (!_minggu ||
-                          (_minggu24Checked ||
-                              (_mingguBukaController.text.isNotEmpty &&
-                                  _mingguTutupController.text.isNotEmpty)))) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
-                          actionsPadding:
-                              const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          title: const Text('Perhatian!'),
-                          content: const Text(
-                            'Apakah anda yakin ingin menyimpan wisata ini?',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          actions: <Widget>[
-                            const Divider(
-                              thickness: 1,
-                              height: 5,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle:
-                                        Theme.of(context).textTheme.labelLarge,
-                                  ),
-                                  child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10))),
-                                      child: const Text(
-                                        'Simpan',
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  onPressed: () {
-                                    saveDataToFirestore();
-                                    Get.to(const Dashboard());
-                                    print("Completed");
-                                  },
+            _namaController.text.isNotEmpty &&
+                    _tiketController.text.isNotEmpty &&
+                    ((_selectedLocation?.latitude != null &&
+                            _selectedLocation?.longitude != null) ||
+                        (_latController.text.isNotEmpty &&
+                            _longController.text.isNotEmpty)) &&
+                    _imageUrl != null &&
+                    (!_senin ||
+                        (_senin24Checked ||
+                            (_seninBukaController.text.isNotEmpty &&
+                                _seninTutupController.text.isNotEmpty))) &&
+                    (!_selasa ||
+                        (_selasa24Checked ||
+                            (_selasaBukaController.text.isNotEmpty &&
+                                _selasaTutupController.text.isNotEmpty))) &&
+                    (!_rabu ||
+                        (_rabu24Checked ||
+                            (_rabuBukaController.text.isNotEmpty &&
+                                _rabuTutupController.text.isNotEmpty))) &&
+                    (!_kamis ||
+                        (_kamis24Checked ||
+                            (_kamisBukaController.text.isNotEmpty &&
+                                _kamisTutupController.text.isNotEmpty))) &&
+                    (!_jumat ||
+                        (_jumat24Checked ||
+                            (_jumatBukaController.text.isNotEmpty &&
+                                _jumatTutupController.text.isNotEmpty))) &&
+                    (!_sabtu ||
+                        (_sabtu24Checked ||
+                            (_sabtuBukaController.text.isNotEmpty &&
+                                _sabtuTutupController.text.isNotEmpty))) &&
+                    (!_minggu ||
+                        (_minggu24Checked ||
+                            (_mingguBukaController.text.isNotEmpty &&
+                                _mingguTutupController.text.isNotEmpty)))
+                ? GestureDetector(
+                    onTap: () {
+                      if (_namaController.text.isNotEmpty &&
+                          _tiketController.text.isNotEmpty &&
+                          ((_selectedLocation?.latitude != null &&
+                                  _selectedLocation?.longitude != null) ||
+                              (_latController.text.isNotEmpty &&
+                                  _longController.text.isNotEmpty)) &&
+                          _imageUrl != null &&
+                          (!_senin ||
+                              (_senin24Checked ||
+                                  (_seninBukaController.text.isNotEmpty &&
+                                      _seninTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_selasa ||
+                              (_selasa24Checked ||
+                                  (_selasaBukaController.text.isNotEmpty &&
+                                      _selasaTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_rabu ||
+                              (_rabu24Checked ||
+                                  (_rabuBukaController.text.isNotEmpty &&
+                                      _rabuTutupController.text.isNotEmpty))) &&
+                          (!_kamis ||
+                              (_kamis24Checked ||
+                                  (_kamisBukaController.text.isNotEmpty &&
+                                      _kamisTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_jumat ||
+                              (_jumat24Checked ||
+                                  (_jumatBukaController.text.isNotEmpty &&
+                                      _jumatTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_sabtu ||
+                              (_sabtu24Checked ||
+                                  (_sabtuBukaController.text.isNotEmpty &&
+                                      _sabtuTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_minggu ||
+                              (_minggu24Checked ||
+                                  (_mingguBukaController.text.isNotEmpty &&
+                                      _mingguTutupController
+                                          .text.isNotEmpty)))) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
+                              actionsPadding:
+                                  const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              title: const Text('Perhatian!'),
+                              content: const Text(
+                                'Apakah anda yakin ingin menyimpan wisata ini?',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              actions: <Widget>[
+                                const Divider(
+                                  thickness: 1,
+                                  height: 5,
                                 ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                      ),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                          child: const Text(
+                                            'Simpan',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )),
+                                      onPressed: () {
+                                        saveDataToFirestore();
+                                        Get.to(const Dashboard());
+                                        print("Completed");
+                                      },
+                                    ),
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                      ),
+                                      child: const Text('Kembali'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Data tidak lengkap'),
+                              content:
+                                  const Text('lengkapi data terlebih dahulu'),
+                              actions: [
                                 TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle:
-                                        Theme.of(context).textTheme.labelLarge,
-                                  ),
-                                  child: const Text('Kembali'),
+                                  child: const Text('OK'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                 ),
                               ],
-                            ),
-                          ],
+                            );
+                          },
                         );
-                      },
-                    );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Data tidak lengkap'),
-                          content: const Text('lengkapi data terlebih dahulu'),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-                child: _namaController.text.isNotEmpty &&
-                        _tiketController.text.isNotEmpty &&
-                        ((_selectedLocation?.latitude != null &&
-                                _selectedLocation?.longitude != null) ||
-                            (_latController.text.isNotEmpty &&
-                                _longController.text.isNotEmpty)) &&
-                        _imageUrl != null &&
-                        (!_senin ||
-                            (_senin24Checked ||
-                                (_seninBukaController.text.isNotEmpty &&
-                                    _seninTutupController.text.isNotEmpty))) &&
-                        (!_selasa ||
-                            (_selasa24Checked ||
-                                (_selasaBukaController.text.isNotEmpty &&
-                                    _selasaTutupController.text.isNotEmpty))) &&
-                        (!_rabu ||
-                            (_rabu24Checked ||
-                                (_rabuBukaController.text.isNotEmpty &&
-                                    _rabuTutupController.text.isNotEmpty))) &&
-                        (!_kamis ||
-                            (_kamis24Checked ||
-                                (_kamisBukaController.text.isNotEmpty &&
-                                    _kamisTutupController.text.isNotEmpty))) &&
-                        (!_jumat ||
-                            (_jumat24Checked ||
-                                (_jumatBukaController.text.isNotEmpty &&
-                                    _jumatTutupController.text.isNotEmpty))) &&
-                        (!_sabtu ||
-                            (_sabtu24Checked ||
-                                (_sabtuBukaController.text.isNotEmpty &&
-                                    _sabtuTutupController.text.isNotEmpty))) &&
-                        (!_minggu ||
-                            (_minggu24Checked ||
-                                (_mingguBukaController.text.isNotEmpty &&
-                                    _mingguTutupController.text.isNotEmpty)))
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(
-                          Icons.save,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(
-                          Icons.save,
-                          color: Colors.grey,
-                        ),
-                      ))
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Icon(
+                        Icons.save,
+                        color: Colors.white,
+                      ),
+                    ))
+                : const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Icon(
+                      Icons.save,
+                      color: Colors.grey,
+                    ),
+                  )
           ],
         ),
         body: Theme(

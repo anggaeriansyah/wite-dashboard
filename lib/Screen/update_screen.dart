@@ -28,6 +28,7 @@ class UpdateScreen extends StatefulWidget {
 class _UpdateScreenState extends State<UpdateScreen> {
   // final _formKey =ormState>();
   late GoogleMapController _mapController;
+  bool mapsOrLatlong = true;
   LatLng? _selectedLocation;
   Set<Marker> _markers = {};
   final picker = ImagePicker();
@@ -53,6 +54,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   TextEditingController _mingguTutupController = TextEditingController();
   TimeOfDay? _selectedOpeningTime;
   TimeOfDay? _selectedClosingTime;
+  TextEditingController _latController = TextEditingController();
+  TextEditingController _longController = TextEditingController();
   String selectedOptionKategori = 'air-terjun';
 
   // Baru
@@ -81,6 +84,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   //validasi form
   bool _isNamaEmpty = false;
   bool _isTiketEmpty = false;
+  bool _isLatEmpty = false;
+  bool _isLongEmpty = false;
 
   List<String> galeri() {
     List<String> galeries = [];
@@ -295,6 +300,40 @@ class _UpdateScreenState extends State<UpdateScreen> {
     });
   }
 
+  void textFieldToMaps() {
+    setState(() {
+      if (_latController.text.isNotEmpty && _longController.text.isNotEmpty) {
+        _selectedLocation = LatLng(double.parse(_latController.text),
+            double.parse(_longController.text));
+      } else {
+        _selectedLocation = null;
+      }
+    });
+  }
+
+  void mapsToTextField() {
+    setState(() {
+      if (_selectedLocation != null) {
+        _latController.text = _selectedLocation!.latitude.toString();
+        _longController.text = _selectedLocation!.longitude.toString();
+        _isLatEmpty = _latController.text.isEmpty;
+        _isLongEmpty = _longController.text.isEmpty;
+      }
+    });
+  }
+
+  void getLat(value) {
+    setState(() {
+      _isLatEmpty = _latController.text.isEmpty || value == '';
+    });
+  }
+
+  void getLong(value) {
+    setState(() {
+      _isLongEmpty = _longController.text.isEmpty || value == '';
+    });
+  }
+
   var currentStep = 0;
   int _totalInnerSteps = 2;
   var _currentInnerStep = 0;
@@ -373,7 +412,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
   //   });
   // }
 
-  void UpdateDataToFirestore() {
+  void updateDataToFirestore() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     Map<String, dynamic> wisata = {
       "nama": _namaController.text,
@@ -1655,53 +1694,198 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       vertical: 16.0, horizontal: 10),
                 ),
               ),
-              const SizedBox(height: 10),
-              Expanded(
-                flex: 0,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: GoogleMap(
-                      zoomGesturesEnabled: true,
-                      onCameraMove: (controller) {
-                        _mapController = controller as GoogleMapController;
-                      },
-                      onMapCreated: (controller) {
-                        _mapController = controller;
-                      },
-                      gestureRecognizers: Set()
-                        ..add(Factory<PanGestureRecognizer>(
-                            () => PanGestureRecognizer())),
-                      onTap: (LatLng latLng) {
-                        setState(() {
-                          _selectedLocation = latLng;
-                          _markers
-                              .clear(); // Hapus marker sebelumnya (jika ada)
-                          _markers.add(
-                            Marker(
-                              markerId: const MarkerId('selected_location'),
-                              position: _selectedLocation!,
-                            ),
-                          );
-                        });
-                      },
-                      markers: _markers,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                            _selectedLocation!.latitude,
-                            _selectedLocation!
-                                .longitude), // Koordinat awal peta
-                        zoom: 15, // Tingkat zoom awal
-                      ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Lokasi :",
+                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      boxShadow: const [
+                        BoxShadow(
+                          spreadRadius: -2,
+                          color: Colors.black26,
+                          offset: Offset(0, 2),
+                          blurRadius: 7,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        mapsOrLatlong
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(5),
+                                      bottomLeft: Radius.circular(5)),
+                                ),
+                                child: const Icon(
+                                  Icons.place_rounded,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    mapsOrLatlong = true;
+                                    textFieldToMaps();
+                                    _markers.clear();
+                                    if (_latController.text.isNotEmpty &&
+                                        _longController.text.isNotEmpty) {
+                                      _markers.add(
+                                        Marker(
+                                          markerId: const MarkerId(
+                                              'selected_location'),
+                                          position: _selectedLocation!,
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  color: Colors.white,
+                                  child: const Icon(
+                                    Icons.place_rounded,
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                              ),
+                        !mapsOrLatlong
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(5),
+                                      bottomRight: Radius.circular(5)),
+                                ),
+                                child: Icon(
+                                  Icons.text_snippet_rounded,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    mapsOrLatlong = false;
+                                    mapsToTextField();
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  color: Colors.white,
+                                  child: const Icon(
+                                    Icons.text_snippet_rounded,
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                              ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
+              mapsOrLatlong
+                  ? Expanded(
+                      flex: 0,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          child: GoogleMap(
+                            zoomGesturesEnabled: true,
+                            onCameraMove: (controller) {
+                              _mapController =
+                                  controller as GoogleMapController;
+                            },
+                            onMapCreated: (controller) {
+                              _mapController = controller;
+                            },
+                            gestureRecognizers: Set()
+                              ..add(Factory<PanGestureRecognizer>(
+                                  () => PanGestureRecognizer())),
+                            onTap: (LatLng latLng) {
+                              setState(() {
+                                _selectedLocation = latLng;
+                                _markers
+                                    .clear(); // Hapus marker sebelumnya (jika ada)
+                                _markers.add(
+                                  Marker(
+                                    markerId:
+                                        const MarkerId('selected_location'),
+                                    position: _selectedLocation!,
+                                  ),
+                                );
+                              });
+                            },
+                            markers: _markers,
+                            initialCameraPosition: CameraPosition(
+                              target: _selectedLocation != null
+                                  ? _selectedLocation!
+                                  : LatLng(-6.6400000,
+                                      106.708000), // Koordinat awal peta
+                              zoom: 15, // Tingkat zoom awal
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            onChanged: getLat,
+                            controller: _latController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: "Latitude",
+                              errorText: _isLatEmpty
+                                  ? 'Latitude tidak boleh kosong'
+                                  : null,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 10),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            onChanged: (value) => getLong(value),
+                            controller: _longController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: "Longitude",
+                              errorText: _isLongEmpty
+                                  ? 'Longitude tidak boleh kosong'
+                                  : null,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 10),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
               Row(
                 children: [
                   const Text("Tutup Sementara :",
@@ -1734,170 +1918,187 @@ class _UpdateScreenState extends State<UpdateScreen> {
           ),
           backgroundColor: Theme.of(context).primaryColor,
           actions: [
-            GestureDetector(
-                onTap: () {
-                  if (_namaController.text.isNotEmpty &&
-                      _tiketController.text.isNotEmpty &&
-                      _selectedLocation?.latitude != null &&
-                      _selectedLocation?.longitude != null &&
-                      _imageUrl != null &&
-                      (!_senin ||
-                          (_senin24Checked ||
-                              (_seninBukaController.text.isNotEmpty &&
-                                  _seninTutupController.text.isNotEmpty))) &&
-                      (!_selasa ||
-                          (_selasa24Checked ||
-                              (_selasaBukaController.text.isNotEmpty &&
-                                  _selasaTutupController.text.isNotEmpty))) &&
-                      (!_rabu ||
-                          (_rabu24Checked ||
-                              (_rabuBukaController.text.isNotEmpty &&
-                                  _rabuTutupController.text.isNotEmpty))) &&
-                      (!_kamis ||
-                          (_kamis24Checked ||
-                              (_kamisBukaController.text.isNotEmpty &&
-                                  _kamisTutupController.text.isNotEmpty))) &&
-                      (!_jumat ||
-                          (_jumat24Checked ||
-                              (_jumatBukaController.text.isNotEmpty &&
-                                  _jumatTutupController.text.isNotEmpty))) &&
-                      (!_sabtu ||
-                          (_sabtu24Checked ||
-                              (_sabtuBukaController.text.isNotEmpty &&
-                                  _sabtuTutupController.text.isNotEmpty))) &&
-                      (!_minggu ||
-                          (_minggu24Checked ||
-                              (_mingguBukaController.text.isNotEmpty &&
-                                  _mingguTutupController.text.isNotEmpty)))) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
-                          actionsPadding:
-                              const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          title: const Text('Perhatian!'),
-                          content: const Text(
-                            'Apakah anda yakin ingin menyimpan wisata ini?',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          actions: <Widget>[
-                            const Divider(
-                              thickness: 1,
-                              height: 5,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle:
-                                        Theme.of(context).textTheme.labelLarge,
-                                  ),
-                                  child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10))),
-                                      child: const Text(
-                                        'Simpan',
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  onPressed: () {
-                                    UpdateDataToFirestore();
-                                    Get.to(Dashboard());
-                                    print("Completed");
-                                  },
+            _namaController.text.isNotEmpty &&
+                    _tiketController.text.isNotEmpty &&
+                    ((_selectedLocation?.latitude != null &&
+                            _selectedLocation?.longitude != null) ||
+                        (_latController.text.isNotEmpty &&
+                            _longController.text.isNotEmpty)) &&
+                    _imageUrl != null &&
+                    (!_senin ||
+                        (_senin24Checked ||
+                            (_seninBukaController.text.isNotEmpty &&
+                                _seninTutupController.text.isNotEmpty))) &&
+                    (!_selasa ||
+                        (_selasa24Checked ||
+                            (_selasaBukaController.text.isNotEmpty &&
+                                _selasaTutupController.text.isNotEmpty))) &&
+                    (!_rabu ||
+                        (_rabu24Checked ||
+                            (_rabuBukaController.text.isNotEmpty &&
+                                _rabuTutupController.text.isNotEmpty))) &&
+                    (!_kamis ||
+                        (_kamis24Checked ||
+                            (_kamisBukaController.text.isNotEmpty &&
+                                _kamisTutupController.text.isNotEmpty))) &&
+                    (!_jumat ||
+                        (_jumat24Checked ||
+                            (_jumatBukaController.text.isNotEmpty &&
+                                _jumatTutupController.text.isNotEmpty))) &&
+                    (!_sabtu ||
+                        (_sabtu24Checked ||
+                            (_sabtuBukaController.text.isNotEmpty &&
+                                _sabtuTutupController.text.isNotEmpty))) &&
+                    (!_minggu ||
+                        (_minggu24Checked ||
+                            (_mingguBukaController.text.isNotEmpty &&
+                                _mingguTutupController.text.isNotEmpty)))
+                ? GestureDetector(
+                    onTap: () {
+                      if (_namaController.text.isNotEmpty &&
+                          _tiketController.text.isNotEmpty &&
+                          ((_selectedLocation?.latitude != null &&
+                                  _selectedLocation?.longitude != null) ||
+                              (_latController.text.isNotEmpty &&
+                                  _longController.text.isNotEmpty)) &&
+                          _imageUrl != null &&
+                          (!_senin ||
+                              (_senin24Checked ||
+                                  (_seninBukaController.text.isNotEmpty &&
+                                      _seninTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_selasa ||
+                              (_selasa24Checked ||
+                                  (_selasaBukaController.text.isNotEmpty &&
+                                      _selasaTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_rabu ||
+                              (_rabu24Checked ||
+                                  (_rabuBukaController.text.isNotEmpty &&
+                                      _rabuTutupController.text.isNotEmpty))) &&
+                          (!_kamis ||
+                              (_kamis24Checked ||
+                                  (_kamisBukaController.text.isNotEmpty &&
+                                      _kamisTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_jumat ||
+                              (_jumat24Checked ||
+                                  (_jumatBukaController.text.isNotEmpty &&
+                                      _jumatTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_sabtu ||
+                              (_sabtu24Checked ||
+                                  (_sabtuBukaController.text.isNotEmpty &&
+                                      _sabtuTutupController
+                                          .text.isNotEmpty))) &&
+                          (!_minggu ||
+                              (_minggu24Checked ||
+                                  (_mingguBukaController.text.isNotEmpty &&
+                                      _mingguTutupController
+                                          .text.isNotEmpty)))) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(24.0, 15, 24.0, 10),
+                              actionsPadding:
+                                  const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              title: const Text('Perhatian!'),
+                              content: const Text(
+                                'Apakah anda yakin ingin menyimpan wisata ini?',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              actions: <Widget>[
+                                const Divider(
+                                  thickness: 1,
+                                  height: 5,
                                 ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                      ),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                          child: const Text(
+                                            'Simpan',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )),
+                                      onPressed: () {
+                                        updateDataToFirestore();
+                                        Get.to(const Dashboard());
+                                        print("Completed");
+                                      },
+                                    ),
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                      ),
+                                      child: const Text('Kembali'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Data tidak lengkap'),
+                              content:
+                                  const Text('lengkapi data terlebih dahulu'),
+                              actions: [
                                 TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle:
-                                        Theme.of(context).textTheme.labelLarge,
-                                  ),
-                                  child: const Text('Kembali'),
+                                  child: const Text('OK'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                 ),
                               ],
-                            ),
-                          ],
+                            );
+                          },
                         );
-                      },
-                    );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Data tidak lengkap'),
-                          content: const Text('lengkapi data terlebih dahulu'),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-                child: _namaController.text.isNotEmpty &&
-                        _tiketController.text.isNotEmpty &&
-                        _selectedLocation?.latitude != null &&
-                        _selectedLocation?.longitude != null &&
-                        _imageUrl != null &&
-                        (!_senin ||
-                            (_senin24Checked ||
-                                (_seninBukaController.text.isNotEmpty &&
-                                    _seninTutupController.text.isNotEmpty))) &&
-                        (!_selasa ||
-                            (_selasa24Checked ||
-                                (_selasaBukaController.text.isNotEmpty &&
-                                    _selasaTutupController.text.isNotEmpty))) &&
-                        (!_rabu ||
-                            (_rabu24Checked ||
-                                (_rabuBukaController.text.isNotEmpty &&
-                                    _rabuTutupController.text.isNotEmpty))) &&
-                        (!_kamis ||
-                            (_kamis24Checked ||
-                                (_kamisBukaController.text.isNotEmpty &&
-                                    _kamisTutupController.text.isNotEmpty))) &&
-                        (!_jumat ||
-                            (_jumat24Checked ||
-                                (_jumatBukaController.text.isNotEmpty &&
-                                    _jumatTutupController.text.isNotEmpty))) &&
-                        (!_sabtu ||
-                            (_sabtu24Checked ||
-                                (_sabtuBukaController.text.isNotEmpty &&
-                                    _sabtuTutupController.text.isNotEmpty))) &&
-                        (!_minggu ||
-                            (_minggu24Checked ||
-                                (_mingguBukaController.text.isNotEmpty &&
-                                    _mingguTutupController.text.isNotEmpty)))
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(
-                          Icons.save,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(
-                          Icons.save,
-                          color: Colors.grey,
-                        ),
-                      ))
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Icon(
+                        Icons.save,
+                        color: Colors.white,
+                      ),
+                    ))
+                : const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Icon(
+                      Icons.save,
+                      color: Colors.grey,
+                    ),
+                  )
           ],
         ),
         body: Theme(
@@ -1983,7 +2184,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                                       style: TextStyle(color: Colors.white),
                                     )),
                                 onPressed: () {
-                                  UpdateDataToFirestore();
+                                  updateDataToFirestore();
                                   // Get.to(Dashboard());
                                   Navigator.pop(context);
                                   print("Completed");
