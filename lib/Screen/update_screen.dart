@@ -1690,9 +1690,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         });
                       },
                       markers: _markers,
-                      initialCameraPosition: const CameraPosition(
+                      initialCameraPosition: CameraPosition(
                         target: LatLng(
-                            -6.6400000, 106.708000), // Koordinat awal peta
+                            _selectedLocation!.latitude,
+                            _selectedLocation!
+                                .longitude), // Koordinat awal peta
                         zoom: 15, // Tingkat zoom awal
                       ),
                     ),

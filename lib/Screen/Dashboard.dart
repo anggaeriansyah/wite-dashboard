@@ -7,8 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:wite_dashboard/Screen/detailScreen.dart';
-import 'package:wite_dashboard/Screen/edit_screen.dart';
-import 'package:wite_dashboard/Screen/loginPage.dart';
 import 'package:wite_dashboard/Screen/tambah_screen.dart';
 import 'package:wite_dashboard/Screen/update_screen.dart';
 
@@ -210,53 +208,10 @@ class _DashboardState extends State<Dashboard> {
                     Positioned(
                         top: 15,
                         right: 15,
-                        child: GestureDetector(
-                          onTap: () {
-                            final wisata = <String, dynamic>{
-                              "image":
-                                  'https://firebasestorage.googleapis.com/v0/b/wite-firebase.appspot.com/o/curug-ciputri.jpg?alt=media&token=6e15b192-c75d-41fa-9ba8-523b363bccdc&_gl=1*daktkz*_ga*NjU0MDExNDQ4LjE2ODU1MTU2MjQ.*_ga_CW55HF8NVT*MTY4NTcxNTQ3MC4xNS4xLjE2ODU3MTczNzAuMC4wLjA.',
-                              "nama": 'tessss',
-                              "desa": 'Tapos I',
-                              "kec": 'Kecamatan Tenjolaya',
-                              "hariOp": [
-                                true,
-                                true,
-                                true,
-                                true,
-                                true,
-                                true,
-                                true
-                              ],
-                              "jamOp": [
-                                '09:00 - 17:00',
-                                '09:00 - 17:00',
-                                '09:00 - 17:00',
-                                '09:00 - 17:00',
-                                '09:00 - 17:00',
-                                '09:00 - 17:00',
-                                '09:00 - 17:00',
-                              ],
-                              "tempClosed": false,
-                              "penginapan": false,
-                              "tiket": 5000,
-                              "desc":
-                                  'Tempat ini merupakan situs berbentuk kompleks (kumpulan situs), Di dalam komplek ini terdapat persebaran situs diantaranya Situs Jami Paciing, Balekambang, Pasir Manggis, Arca Domas, Endong Kasang, Cipangentehan dan situs Batu Bergores. Adapun situs-situs tersebut membentuk batu kubur, dolmen (mirip meja berukuran lebih pendek), menhir (batu panjang yang berdiri) dan batu bergurat-gurat yang diyakini sebagai pahatan tulisan kuno.',
-                              "imageGaleries": [],
-                              "latitude": -6.67139,
-                              "longitude": 106.70989,
-                              "kategori": 'situs',
-                            };
-
-                            db.collection("wisata").add(wisata).then(
-                                (DocumentReference doc) => print(
-                                    'DocumentSnapshot added with ID: ${doc.id}'));
-                            setState(() {});
-                          },
-                          child: Icon(
-                            Icons.add_box_rounded,
-                            size: 30,
-                            color: Colors.white,
-                          ),
+                        child: Icon(
+                          Icons.add_box_rounded,
+                          size: 30,
+                          color: Colors.white,
                         )),
                     Positioned(
                       bottom: 0,
